@@ -100,10 +100,10 @@ router.get('/get_items',async (req,res)=>{
     //check the fields that are provided in the request to find items and gathering them in one object called 
     //item_search_info.
     var item_search_info={};
-    if(req.body.name) item_search_info.name=req.body.name;
-    if(req.body.brand) item_search_info.brand=req.body.brand;
-    if(req.body.color) item_search_info.color=req.body.color;
-    if(req.body.size) item_search_info.size=req.body.size;
+    if(req.body.name) item_search_info.name=new RegExp(req.body.name,"i");
+    if(req.body.brand) item_search_info.brand=new RegExp(req.body.brand,"i");
+    if(req.body.color) item_search_info.color=new RegExp(req.body.color,"i");
+    if(req.body.size) item_search_info.size=new RegExp(req.body.size,"i");
     if(req.body.price) item_search_info.price=req.body.price;
     if(req.body.quantity) item_search_info.quantity=req.body.quantity;
 
@@ -124,10 +124,10 @@ router.patch('/update_items',upload.array('ItemImage',10),async (req,res)=>{
     //gathering the search info to know which items should be updated
     var item_search_info={};
     if(req.body.search){
-        if(req.body.search.name) item_search_info.name=req.body.search.name;
-        if(req.body.search.brand) item_search_info.brand=req.body.search.brand;
-        if(req.body.search.color) item_search_info.color=req.body.search.color;
-        if(req.body.search.size) item_search_info.size=req.body.search.size;
+        if(req.body.search.name) item_search_info.name=new RegExp(req.body.search.name,"i");
+        if(req.body.search.brand) item_search_info.brand=new RegExp(req.body.search.brand,"i");
+        if(req.body.search.color) item_search_info.color=new RegExp(req.body.search.color,"i");
+        if(req.body.search.size) item_search_info.size=new RegExp(req.body.search.size,"i");
         if(req.body.search.price) item_search_info.price=req.body.search.price;
         if(req.body.search.quantity) item_search_info.quantity=req.body.search.quantity;
     }
@@ -193,20 +193,5 @@ router.patch('/update_items',upload.array('ItemImage',10),async (req,res)=>{
     }
 });
 //-----------------------------------------------------------------
-
-/*//update item
-//this will be used only after an item is purchased
-router.patch('/update_item/:id',async (req,res)=>{
-
-    //update purchased item
-    try{
-        const updated_item=await Item.updateOne({_id: req.params.id},{$inc: {times_ordered: 1, quantity: -1}});
-        res.json("item successfully updated.");
-    }
-    catch(err){
-        res.json(err);
-    }
-});
-//-----------------------------------------------------------------*/
 
 module.exports = router;

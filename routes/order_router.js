@@ -6,6 +6,7 @@ const express= require('express');
 const Order= require('../models/order');
 const User= require('../models/user');
 const Item= require('../models/item');
+const { Mongoose } = require('mongoose');
 //---------------------------------------------------------------------------
 
 //initialising router
@@ -16,7 +17,42 @@ const router= express.Router();
 router.get('/get_customer_orders/:id', async (req,res)=>{
     if(!req.params.id) return res.status(404).send('No ID in the request');
     try{ 
-        const user_orders= await Order.find({user_id: req.params.id});
+        //const user_orders= await Order.find({user_id: req.params.id});
+        const user_orders= await Order.aggregate([
+            {
+                $match: {
+                    "user_id": req.params.id
+                }
+            },
+            {
+                "$addFields": {
+                  "item_id": { "$toObjectId": "$item_id" }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'items',
+                    localField: 'item_id',
+                    foreignField: '_id',
+                    as: 'item_info'
+
+                }
+            },
+            {
+                $project: {
+                    "item_info.images": 1,
+                    "item_name": 1,
+                    "item_id": 1,
+                    "status": 1,
+                    "quantity": 1,
+                    "date_time": 1,
+                    "item_brand": 1,
+                    "item_size": 1,
+                    "item_color": 1,
+                    "item_price": 1
+                }
+            }
+        ]);
         res.json(user_orders);
     }
     catch(err){
@@ -33,12 +69,12 @@ router.get('/get_orders', async (req,res)=>{
     let search_info={};
     if(req.body.shipment_id) search_info.shipment_id= req.body.shipment_id;
     if(req.body.quantity) search_info.quantity= req.body.quantity;
-    if(req.body.status) search_info.status= req.body.status;
-    if(req.body.date_time) search_info.date_time= req.body.date_time;
-    if(req.body.item_name) search_info.item_name= req.body.item_name;
-    if(req.body.item_brand) search_info.item_brand= req.body.item_brand;
-    if(req.body.item_color) search_info.item_color= req.body.item_color;
-    if(req.body.item_size) search_info.item_size= req.body.item_size;
+    if(req.body.status) search_info.status= new RegExp(req.body.status,"i");
+    if(req.body.date_time) search_info.date_time= new RegExp(req.body.date_time,"i");
+    if(req.body.item_name) search_info.item_name= new RegExp(req.body.item_name,"i");
+    if(req.body.item_brand) search_info.item_brand= new RegExp(req.body.item_brand,"i");
+    if(req.body.item_color) search_info.item_color= new RegExp(req.body.item_color,"i");
+    if(req.body.item_size) search_info.item_size= new RegExp(req.body.item_size,"i");
 
     //getting the orders from the database
     try{
@@ -106,12 +142,12 @@ router.patch('/update_orders',async (req,res)=>{
     let search_info={};
     if(req.body.search.shipment_id) search_info.shipment_id= req.body.search.shipment_id;
     if(req.body.search.quantity) search_info.quantity= req.body.search.quantity;
-    if(req.body.search.status) search_info.status= req.body.search.status;
-    if(req.body.search.date_time) search_info.date_time= req.body.search.date_time;
-    if(req.body.search.item_name) search_info.item_name= req.body.search.item_name;
-    if(req.body.search.item_brand) search_info.item_brand= req.body.search.item_brand;
-    if(req.body.search.item_color) search_info.item_color= req.body.search.item_color;
-    if(req.body.search.item_size) search_info.item_size= req.body.search.item_size;
+    if(req.body.search.status) search_info.status= new RegExp(req.body.search.status,"i");
+    if(req.body.search.date_time) search_info.date_time= new RegExp(req.body.search.date_time,"i");
+    if(req.body.search.item_name) search_info.item_name= new RegExp(req.body.search.item_name,"i");
+    if(req.body.search.item_brand) search_info.item_brand= new RegExp(req.body.search.item_brand,"i");
+    if(req.body.search.item_color) search_info.item_color= new RegExp(req.body.search.item_color,"i");
+    if(req.body.search.item_size) search_info.item_size= new RegExp(req.body.search.item_size,"i");
 
     //gathering update info
     let update_info={};
