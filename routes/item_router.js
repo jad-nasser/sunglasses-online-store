@@ -3,6 +3,8 @@ const express= require('express');
 const multer= require('multer');
 const fs= require('fs');
 const { validate, count } = require('../models/item');
+const jwt= require('jsonwebtoken');
+require('dotenv').config();
 //----------------------------------------
 
 //import item schema
@@ -49,7 +51,8 @@ const upload=multer({
 //------------------------------------------------------------------------------
 
 //create a item
-router.post('/create_item',upload.array('ItemImage',10),async (req,res)=>{
+//The seller only can create a item
+router.post('/create_item',authenticateSellerToken,upload.array('ItemImage',10), async (req,res)=>{
 
     //verify the existence of every needed field in the request
     if(!req.body.name) return res.status(404).send("Item name not found");
@@ -58,7 +61,7 @@ router.post('/create_item',upload.array('ItemImage',10),async (req,res)=>{
     if(!req.body.size) return res.status(404).send("Item size not found");
     if(!req.body.price) return res.status(404).send("Item price not found");
     if(!req.body.quantity) return res.status(404).send("Item quantity not found");
-    if(req.files.length==0) return res.status(404).send("At least one image is required");
+    if(!req.files||!req.files.length||req.files.length==0) return res.status(404).send("At least one image is required");
 
     //gathering the necessary fields from the request body to item_info object
     var item_info= {};
@@ -95,7 +98,7 @@ router.post('/create_item',upload.array('ItemImage',10),async (req,res)=>{
 //-----------------------------------------------------------------------------------
 
 //Search items
-router.get('/get_items',async (req,res)=>{
+router.get('/get_items', async (req,res)=>{
 
     //check the fields that are provided in the request to find items and gathering them in one object called 
     //item_search_info.
@@ -109,7 +112,7 @@ router.get('/get_items',async (req,res)=>{
 
     //using the item_search_info search data to find the items in the database
     try{
-        const found_items=await Item.find(item_search_info);
+        const found_items= await Item.find(item_search_info);
         res.json(found_items);
     }
     catch(err){
@@ -119,7 +122,8 @@ router.get('/get_items',async (req,res)=>{
 //----------------------------------------------------------
 
 //update items
-router.patch('/update_items',upload.array('ItemImage',10),async (req,res)=>{
+//onlt the seller can update items
+router.patch('/update_items',authenticateSellerToken,upload.array('ItemImage',10), async (req,res)=>{
 
     //gathering the search info to know which items should be updated
     var item_search_info={};
@@ -157,7 +161,7 @@ router.patch('/update_items',upload.array('ItemImage',10),async (req,res)=>{
             if(req.files.length>0){
 
                 //checking the number of links of the old images to be replaced so if the number of links (linked 
-                //items that share the same image) is reduced to zero the image will be deleted else the number of 
+                //items that share the same image) is reduced to one the image will be deleted else the number of 
                 //links (count) is decreased.
                 const unupdated_items= await Item.find(item_search_info);
                 for(let i=0;i<unupdated_items.length;i++){
@@ -193,5 +197,17 @@ router.patch('/update_items',upload.array('ItemImage',10),async (req,res)=>{
     }
 });
 //-----------------------------------------------------------------
+
+//seller token authentication middleware function
+function authenticateSellerToken(req,res,next){
+    const token= req.headers['authorization'].split(' ')[1];
+    if(!token) return res.status(404).send('No token found');
+    jwt.verify(token,process.env.SELLER_LOGIN_TOKEN_SECRET,(err,user)=>{
+        if(err) return res.status(403).send("Not valid token");
+        req.user=user;
+        next();
+    });
+}
+//----------------------------------------------------------------------------------------------
 
 module.exports = router;

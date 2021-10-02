@@ -1,6 +1,9 @@
 //importing express
 const express= require('express');
 const { validate } = require('../models/user');
+const jwt= require('jsonwebtoken');
+require('dotenv').config();
+const random= require('crypto');
 //----------------------------------------
 
 //import user schema
@@ -12,7 +15,7 @@ const router=express.Router();
 //----------------------------------------------------
 
 //create a user
-router.post('/create_user',email_validate,password_validate,phone_validate,async (req,res)=>{
+router.post('/create_user',email_validate,password_validate,phone_validate, async (req,res)=>{
 
     //verify the existence of every needed field in the request
     if(!req.body.first_name) return res.status(404).send("User first name not found");
@@ -50,7 +53,7 @@ router.post('/create_user',email_validate,password_validate,phone_validate,async
     //adding the new user to the database
     const user= new User(user_info);
     try{
-        const saved_user=await user.save();
+        const saved_user= await user.save();
         res.send("User added successfully");
     }
     catch(err) {
@@ -59,27 +62,48 @@ router.post('/create_user',email_validate,password_validate,phone_validate,async
 });
 //-----------------------------------------------------------------------------------
 
-//get a user by its email and password
-//this method is used in sign in page
-router.get('/get_user',async (req,res)=>{
+//user login
+router.post('/user_login', async (req,res)=>{
+
+    //check if the email and password fields are exist
+    let user={};
+    if(!req.body.email) return res.status(404).send('Email not found');
+    else user.email=req.body.email;
+    if(!req.body.password) return res.status(404).send('Password not found');
+    else user.password=req.body.password;
+
     try{
-        const found_user=await User.findOne({
-            email: req.body.email,
-            password: req.body.password
-        });
-        res.send("User found and its ID is:"+found_user._id);
+        const found_user= await User.findOne(user);
+
+        //check if the user is found
+        if(!found_user) return res.status(404).send('User not found');
+
+        //give a token to the user according to the user type
+        let user_token_info={};
+        user_token_info.user_id=found_user._id;
+        user_token_info.user_type=found_user.user_type;
+        if(found_user.user_type==="seller"){
+            const seller_token= jwt.sign(user_token_info,process.env.SELLER_LOGIN_TOKEN_SECRET,{expiresIn: '24h'});
+            res.json({token: seller_token});
+        }
+        else{
+            const customer_token= jwt.sign(user_token_info,process.env.CUSTOMER_LOGIN_TOKEN_SECRET,{expiresIn: '24h'});
+            res.json({token: customer_token}); 
+        }
     }
     catch(err){
         res.json(err);
     }
+
 });
-//----------------------------------------------------------
+//-------------------------------------------------------------------------------------------
 
 //delete a user
-router.delete('/delete_user/:id',async (req,res)=>{
+//only the user can delete its own account
+router.delete('/delete_user',authenticateCustomerToken,async (req,res)=>{
     try{
-        const deleted_user=await User.deleteOne({_id: req.params.id});
-        res.send("The user with the ID:"+req.params.id+" is successfully deleted.");
+        const deleted_user= await User.deleteOne({_id: req.user.user_id});
+        res.send("The user with the ID:"+req.user.user_id+" is successfully deleted.");
     }
     catch(err){
         res.json(err);
@@ -88,7 +112,8 @@ router.delete('/delete_user/:id',async (req,res)=>{
 //------------------------------------------------------------
 
 //update user info
-router.patch('/update_user/:id',email_validate,password_validate,phone_validate,async (req,res)=>{
+//only the user can update its own account
+router.patch('/update_user',authenticateCustomerToken,email_validate,password_validate,phone_validate, async (req,res)=>{
 
     //check the fields that the user want to update and gathering them in one object called user_update_info.
     //during checking also the email, phone, and password will be checked for their validation results by the
@@ -117,7 +142,9 @@ router.patch('/update_user/:id',email_validate,password_validate,phone_validate,
 
     //update the user info with the information the user provided
     try{
-        const updated_user=await User.updateOne({_id: req.params.id},{$set: user_update_info});
+        await User.updateOne({_id: req.user.user_id},{$set: user_update_info});
+        if(req.body.email) await User.updateOne({_id: req.user.user_id},{$set: {is_email_verified: false}});
+        if(req.body.phone) await User.updateOne({_id: req.user.user_id},{$set: {is_phone_verified: false}});
         res.json("User successfully updated.");
     }
     catch(err){
@@ -126,8 +153,34 @@ router.patch('/update_user/:id',email_validate,password_validate,phone_validate,
 });
 //-----------------------------------------------------------------
 
+//this method is for testing only you should use an api to verify email address
+//this method is to verify the email address of a customer
+router.post('/verify_email_for_testing_only',authenticateCustomerToken,async (req,res)=>{
+    try{
+        await User.updateOne({_id: req.user.user_id},{$set: {is_email_verified: true} });
+        return res.send('Your email address is succesfully verified');
+    }
+    catch(err){
+        return res.json(err);
+    }
+});
+//----------------------------------------------------------------------------------------
+
+//this method is only for testing the actual one should use an api for that
+//this method is to verify phone number of a customer
+router.post('/verify_phone_for_testing_only',authenticateCustomerToken,async (req,res)=>{   
+    try{
+        await User.updateOne({_id: req.user.user_id},{$set: {is_phone_verified: true} });
+        return res.send('Your phone number is succesfully verified');
+    }
+    catch(err){
+        return res.json(err);
+    }
+});
+//---------------------------------------------------------------------------------------------------------
+
 //email validation middleware
-async function email_validate (req,res,next){
+ async function email_validate (req,res,next){
        
     //check the existence of the email field and also check if it has the legal length
     if(!req.body.email||req.body.email.length>40) {
@@ -146,7 +199,7 @@ async function email_validate (req,res,next){
 
     //checking if other user have the same email
     try{
-        const already_existing_email= await User.findOne({email: req.body.email})
+        const already_existing_email=  await User.findOne({email: req.body.email})
         if(already_existing_email){
             req.body.email_validate=false;
             next();
@@ -164,8 +217,8 @@ async function email_validate (req,res,next){
 }
 //------------------------------------------------------------------------------------
 
-//password validation
-async function password_validate(req,res,next){
+//password validation middleware
+ function password_validate(req,res,next){
 
     //check if password exists in the request and also check if it has the apropriate length
     if(!req.body.password||req.body.password.length>32){
@@ -189,8 +242,8 @@ async function password_validate(req,res,next){
 }
 //--------------------------------------------------------------------------------------------
 
-//phone validation
-async function phone_validate(req,res,next){
+//phone validation middleware
+ function phone_validate(req,res,next){
 
     //check if phone exists in the request and also check if it has the appropriate length
     if(!req.body.phone||req.body.phone.length>40){
@@ -213,5 +266,17 @@ async function phone_validate(req,res,next){
     next();
 }
 //--------------------------------------------------------------------------------------------
+
+//customer token authentication middleware function
+function authenticateCustomerToken(req,res,next){
+    const token= req.headers['authorization'].split(' ')[1];
+    if(!token) return res.status(404).send('No token found');
+    jwt.verify(token,process.env.CUSTOMER_LOGIN_TOKEN_SECRET,(err,user)=>{
+        if(err) return res.status(403).send("Not valid token");
+        req.user=user;
+        next();
+    });
+}
+//-----------------------------------------------------------------------------------------------
 
 module.exports = router;
