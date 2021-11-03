@@ -2,14 +2,15 @@
   "name": "sunglasses-online-store",
   "version": "1.0.0",
   "description": "Sunglasses online store.",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon server.js",
+    "unit-testing": "nodemon --exec \"mocha  test/unit_testing.test.js\" ",
+    "integration-testing": "nodemon --exec \"mocha  test/integration_testing.test.js\" "
   },
   "author": "Jad Nasser",
   "license": "ISC",
   "dependencies": {
-    "@angular/cli": "^12.2.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
@@ -20,7 +21,10 @@
     "stripe": "^8.175.0"
   },
   "devDependencies": {
+    "chai": "^4.3.4",
     "mocha": "^9.1.2",
+    "proxyquire": "^2.1.3",
+    "sinon": "^11.1.2",
     "supertest": "^6.1.6"
   }
 }
