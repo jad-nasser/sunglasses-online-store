@@ -542,68 +542,6 @@ describe("Tesing user controller", function () {
   //------------------------------------------------------------------------------------------------
   //------------------------------------------------------------------------------------------------
 
-  //Testing verify_email_for_testing_only()
-  describe("Testing verify_email_for_testing_only()", function () {
-    //Testing verify_email_for_testing_only() by sending a user id:'1234'
-    //Should return a 200 response with message: "Your email address is succesfully verified"
-    it('Should return a 200 response with message: "Your email address is succesfully verified"', async function () {
-      //creating request and response
-      let res = Object.assign({}, response);
-      let req = {
-        user: {
-          user_id: "1234",
-        },
-      };
-      //stubbing user_database_controller.update_user()
-      const stub1 = sinon.stub();
-      const controller = proxyquire("../controllers/user_controller", {
-        "../database_controllers/user_database_controller": {
-          update_user: stub1,
-        },
-      });
-      //calling the tested method
-      await controller.verify_email_for_testing_only(req, res);
-      //assertions
-      expect(res.status_number).to.be.equal(200);
-      expect(res.text).to.be.equal(
-        "Your email address is succesfully verified"
-      );
-    });
-    //-----------------------------------------------------------------------------------------------
-  });
-  //-------------------------------------------------------------------------------------------------
-  //------------------------------------------------------------------------------------------------
-
-  //Testing verify_phone_for_testing_only()
-  describe("Testing verify_phone_for_testing_only()", function () {
-    //Testing verify_phone_for_testing_only() by sending a user id:'1234'
-    //Should return a 200 response with message: "Your phone number is succesfully verified"
-    it('Should return a 200 response with message: "Your phone number is succesfully verified"', async function () {
-      //creating request and response
-      let res = Object.assign({}, response);
-      let req = {
-        user: {
-          user_id: "1234",
-        },
-      };
-      //stubbing user_database_controller.update_user()
-      const stub1 = sinon.stub();
-      const controller = proxyquire("../controllers/user_controller", {
-        "../database_controllers/user_database_controller": {
-          update_user: stub1,
-        },
-      });
-      //calling the tested method
-      await controller.verify_phone_for_testing_only(req, res);
-      //assertions
-      expect(res.status_number).to.be.equal(200);
-      expect(res.text).to.be.equal("Your phone number is succesfully verified");
-    });
-    //-----------------------------------------------------------------------------------------------
-  });
-  //-------------------------------------------------------------------------------------------------
-  //------------------------------------------------------------------------------------------------
-
   //Testing email_validate()
   describe("Testing email_validate()", function () {
     //Testing email_validate() by sending an empty body request
@@ -796,6 +734,209 @@ describe("Tesing user controller", function () {
   });
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
+
+  describe("Testing /user/get_user", function () {
+    it("Should return a 200 response with a user_info variable", async function () {
+      //creating request and response
+      let res = Object.assign({}, response);
+      let req = {
+        user: {
+          user_id: "1234",
+          user_type: "customer",
+        },
+      };
+      //stubbing database method
+      let mock_user = {
+        _id: "1234",
+        first_name: "Test",
+        last_name: "Test",
+        user_type: "customer",
+        password: "qwertY7,",
+      };
+      let find_user_stub = sinon.stub().returns(mock_user);
+      let controller = proxyquire("../controllers/user_controller", {
+        "../database_controllers/user_database_controller": {
+          find_user: find_user_stub,
+        },
+      });
+      //calling the tested method
+      await controller.get_user(req, res);
+      //assertions
+      expect(res.status_number).to.be.equal(200);
+      expect(find_user_stub.calledOnce).to.be.true;
+      expect(res.text.user_info).to.be.exist;
+    });
+    //-------------------------------------------------------------------------------------
+  });
+  //--------------------------------------------------------------------------------------
+  //--------------------------------------------------------------------------------------
+
+  describe("Testing /user/check_email", function () {
+    it('Should return 404 response with a message "Write an email address"', async function () {
+      //creating request and response
+      let res = Object.assign({}, response);
+      let req = {
+        body: {},
+      };
+      //calling the tested method
+      await user_controller.check_email(req, res);
+      //assertions
+      expect(res.status_number).to.be.equal(404);
+      expect(res.text).to.be.equal("Write an email address");
+    });
+    //-------------------------------------------------------------------------------
+
+    it("Should return a 200 response with false", async function () {
+      //creating request and response
+      let res = Object.assign({}, response);
+      let req = {
+        body: {
+          email: "testtest@test.com",
+        },
+      };
+      //stubbing the database method
+      let find_user_stub = sinon.stub().returns(null);
+      let controller = proxyquire("../controllers/user_controller", {
+        "../database_controllers/user_database_controller": {
+          find_user: find_user_stub,
+        },
+      });
+      //calling the tested method
+      await controller.check_email(req, res);
+      //assertions
+      expect(res.status_number).to.be.equal(200);
+      expect(find_user_stub.calledOnce).to.be.true;
+      expect(res.text.check_email).to.be.false;
+    });
+    //----------------------------------------------------------------------------------
+
+    it("Should return a 200 response with true", async function () {
+      //creating request and response
+      let res = Object.assign({}, response);
+      let req = {
+        body: {
+          email: "testtest@test.com",
+        },
+      };
+      //stubbing database method
+      let mock_user = {
+        _id: "1234",
+        first_name: "Test",
+        last_name: "Test",
+        user_type: "customer",
+        email: "testtest@test.com",
+      };
+      let find_user_stub = sinon.stub().returns(mock_user);
+      let controller = proxyquire("../controllers/user_controller", {
+        "../database_controllers/user_database_controller": {
+          find_user: find_user_stub,
+        },
+      });
+      //calling the tested method
+      await controller.check_email(req, res);
+      //assertions
+      expect(res.status_number).to.be.equal(200);
+      expect(find_user_stub.calledOnce).to.be.true;
+      expect(res.text.check_email).to.be.true;
+    });
+    //----------------------------------------------------------------------------------
+  });
+  //--------------------------------------------------------------------------------------
+  //--------------------------------------------------------------------------------------
+
+  describe("Testing /user/check_password", function () {
+    it('Should return a 404 response with a message "Write your password"', async function () {
+      //creating request and response
+      let res = Object.assign({}, response);
+      let req = {
+        body: {},
+        user: {
+          user_id: "1234",
+          user_type: "customer",
+        },
+      };
+      //calling the tested method
+      await user_controller.check_password(req, res);
+      //assertions
+      expect(res.status_number).to.be.equal(404);
+      expect(res.text).to.be.equal("Write your password");
+    });
+    //-----------------------------------------------------------------------------
+
+    it("Should return a 200 response with false", async function () {
+      //creating request and response
+      let res = Object.assign({}, response);
+      let req = {
+        body: {
+          password: "qwertY7,",
+        },
+        user: {
+          user_id: "1234",
+          user_type: "customer",
+        },
+      };
+      //stubbing the database method
+      let mock_user = {
+        _id: "1234",
+        first_name: "Test",
+        last_name: "Test",
+        user_type: "customer",
+        email: "testtest@test.com",
+        password: "qwertY8,",
+      };
+      let find_user_stub = sinon.stub().returns(mock_user);
+      let controller = proxyquire("../controllers/user_controller", {
+        "../database_controllers/user_database_controller": {
+          find_user: find_user_stub,
+        },
+      });
+      //calling the tested method
+      await controller.check_password(req, res);
+      //assertions
+      expect(res.status_number).to.be.equal(200);
+      expect(find_user_stub.calledOnce).to.be.true;
+      expect(res.text.check_password).to.be.false;
+    });
+    //-----------------------------------------------------------------------------
+
+    it("Should return a 200 response with true", async function () {
+      //creating request and response
+      let res = Object.assign({}, response);
+      let req = {
+        body: {
+          password: "qwertY7,",
+        },
+        user: {
+          user_id: "1234",
+          user_type: "customer",
+        },
+      };
+      //stubbing the database method
+      let mock_user = {
+        _id: "1234",
+        first_name: "Test",
+        last_name: "Test",
+        user_type: "customer",
+        email: "testtest@test.com",
+        password: "qwertY7,",
+      };
+      let find_user_stub = sinon.stub().returns(mock_user);
+      let controller = proxyquire("../controllers/user_controller", {
+        "../database_controllers/user_database_controller": {
+          find_user: find_user_stub,
+        },
+      });
+      //calling the tested method
+      await controller.check_password(req, res);
+      //assertions
+      expect(res.status_number).to.be.equal(200);
+      expect(find_user_stub.calledOnce).to.be.true;
+      expect(res.text.check_password).to.be.true;
+    });
+    //-----------------------------------------------------------------------------
+  });
+  //-------------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------
 });
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------

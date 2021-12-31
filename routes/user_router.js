@@ -42,6 +42,27 @@ router.patch(
 );
 //-----------------------------------------------------------------
 
+//get logged in user info
+router.get(
+  "/get_user",
+  user_controller.authenticateCustomerToken,
+  user_controller.get_user
+);
+//--------------------------------------------------------------------------------------------
+
+//check if an email is already exists
+router.get("/check_email", user_controller.check_email);
+//------------------------------------------------------------------------------------------
+
+//check if the entered password is correct
+//the user can only check his/her password
+router.get(
+  "/check_password",
+  user_controller.authenticateCustomerToken,
+  user_controller.check_password
+);
+//--------------------------------------------------------------------------------------------------------
+
 //this method is for testing only you should use an api to verify email address
 //this method is to verify the email address of a customer
 router.post(

@@ -194,6 +194,66 @@ async function update_user(req, res) {
 }
 //-----------------------------------------------------------------
 
+//this method is to get the logged in user info
+async function get_user(req, res) {
+  //finding the user in the database
+  let user_info = {};
+  try {
+    user_info = await user_database_controller.find_user({
+      _id: req.user.user_id,
+    });
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+  //removing the password for security reasons
+  delete user_info.password;
+  //returning user_info
+  return res.json({ user_info });
+}
+//-------------------------------------------------------------------------------------------
+
+//this method is used to check if the current email is already exists
+async function check_email(req, res) {
+  //checking if email field is not exist
+  if (!req.body.email) return res.status(404).send("Write an email address");
+  //getting the user that has that email from the database
+  let user_info = {};
+  try {
+    user_info = await user_database_controller.find_user({
+      email: req.body.email,
+    });
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+  //checking if no email found
+  if (!user_info) return res.json({ check_email: false });
+  //returning true after the email is found
+  return res.json({ check_email: true });
+}
+//-------------------------------------------------------------------------------------------
+
+//this method is used to check if the entered password is correct
+//the user can only check his/her password
+async function check_password(req, res) {
+  //checking if password field is not exist
+  if (!req.body.password) return res.status(404).send("Write your password");
+  //getting the logged in user from the database
+  let user_info = {};
+  try {
+    user_info = await user_database_controller.find_user({
+      _id: req.user.user_id,
+    });
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+  //checking if the entered password is not correct
+  if (req.body.password !== user_info.password)
+    return res.json({ check_password: false });
+  //returning true because the entered password is correct
+  return res.json({ check_password: true });
+}
+//-------------------------------------------------------------------------------------------
+
 //this method is for testing only you should use an api to verify email address
 //this method is to verify the email address of a customer
 async function verify_email_for_testing_only(req, res) {
@@ -324,4 +384,7 @@ module.exports = {
   password_validate,
   phone_validate,
   authenticateSellerToken,
+  get_user,
+  check_password,
+  check_email,
 };

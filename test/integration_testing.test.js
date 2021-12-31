@@ -29,6 +29,12 @@ const email_password = {
   email: test_user1.email,
   password: test_user1.password,
 };
+const email = {
+  email: test_user1.email,
+};
+const password = {
+  password: test_user1.password,
+};
 let user_with_same_email = Object.assign({}, test_user1);
 user_with_same_email.first_name = "Matt";
 const test_user2 = {
@@ -320,6 +326,87 @@ describe("Testing user router", function () {
     );
   });
   //-----------------------------------------------------------------------------------------
+
+  it("Testing /user/get_user it should return a 200 response with the signed in user info", async function () {
+    //creating final response variable
+    let final_res = null;
+    //create variable for token
+    let token = null;
+    //creating the user
+    let user = new User(test_user1);
+    await user.save();
+    //sending login request
+    await request(app)
+      .post("/user/user_login")
+      .send(email_password)
+      .expect(function (res) {
+        res.text = JSON.parse(res.text);
+        token = res.text.token;
+      });
+    //sending get_user request
+    await request(app)
+      .get("/user/get_user")
+      .set("Authorization", "Bearer " + token)
+      .expect(function (res) {
+        res.text = JSON.parse(res.text);
+        final_res = res;
+      });
+    //assertions
+    expect(final_res.statusCode).to.be.equal(200);
+    expect(final_res.text.user_info).to.be.exist;
+  });
+  //-------------------------------------------------------------------------------------------
+
+  it("Testing /user/check_email it should return a 200 with a variable check_email = true", async function () {
+    //creating final response variable
+    let final_res = null;
+    //creating the user
+    let user = new User(test_user1);
+    await user.save();
+    //sending check_email request
+    await request(app)
+      .get("/user/check_email")
+      .send(email)
+      .expect(function (res) {
+        res.text = JSON.parse(res.text);
+        final_res = res;
+      });
+    //assertions
+    expect(final_res.statusCode).to.be.equal(200);
+    expect(final_res.text.check_email).to.be.true;
+  });
+  //--------------------------------------------------------------------------------------------
+
+  it("Testing /user/check_password it should return a 200 response with a variable check_password = true", async function () {
+    //creating final response variable
+    let final_res = null;
+    //creating token variable
+    let token = null;
+    //creating the user
+    let user = new User(test_user1);
+    await user.save();
+    //sending login request
+    await request(app)
+      .post("/user/user_login")
+      .send(email_password)
+      .expect(function (res) {
+        res.text = JSON.parse(res.text);
+        token = res.text.token;
+      });
+    //sending check_password request
+    await request(app)
+      .get("/user/check_password")
+      .set("Authorization", "Bearer " + token)
+      .send(password)
+      .expect(function (res) {
+        res.text = JSON.parse(res.text);
+        final_res = res;
+      });
+    //assertions
+    expect(final_res.statusCode).to.be.equal(200);
+    expect(final_res.text.check_password).to.be.true;
+  });
+  //--------------------------------------------------------------------------------------------------------
 });
 //---------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------
