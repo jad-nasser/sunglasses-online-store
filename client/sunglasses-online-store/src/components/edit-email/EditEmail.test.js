@@ -11,6 +11,9 @@ import EditEmail from "./EditEmail";
 const server = setupServer(
   rest.patch("/user/update_user", (req, res, ctx) => {
     return res(ctx.status(200));
+  }),
+  rest.get("/user/check_email", (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json({ check_email: false }));
   })
 );
 //-----------------------------------------------------------------------------------------
@@ -76,8 +79,32 @@ describe("Testing EditEmail component", () => {
   test("Testing the component when the server rejects the email change", () => {
     //overriding the mock server method
     server.use(
-      rest.patch("user/update_user", (req, res, ctx) => {
-        return res(ctx.status(403));
+      rest.patch("/user/update_user", (req, res, ctx) => {
+        return res(ctx.status(500, "Server error"));
+      })
+    );
+    //rendering the component
+    render(
+      <BrowserRouter>
+        <EditEmail />
+      </BrowserRouter>
+    );
+    //entering an email address
+    fireEvent.change(screen.getByPlaceholderText("New Email Address"), {
+      target: { value: "testtest@test.com" },
+    });
+    //clicking the change email button
+    fireEvent.click(screen.getByRole("button", { name: /change email/i }));
+    //assertions
+    expect(screen.getByText("Error: Server error")).toBeVisible();
+  });
+  //----------------------------------------------------------------------
+
+  test("Testing the component when the entered email is already used", () => {
+    //overriding the mock server method
+    server.use(
+      rest.get("/user/chech_email", (req, res, ctx) => {
+        return res(ctx.status(200), ctx.json({ check_email: true }));
       })
     );
     //rendering the component
@@ -91,7 +118,7 @@ describe("Testing EditEmail component", () => {
       target: { value: "testtest@test.com" },
     });
     //assertions
-    expect(screen.getByText("Email already used")).toBeVisible();
+    expect(screen.getByLabelText("Email already used")).toBeVisible();
   });
   //----------------------------------------------------------------------
 });

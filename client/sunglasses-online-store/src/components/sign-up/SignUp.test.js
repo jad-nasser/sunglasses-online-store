@@ -12,6 +12,9 @@ import userEvent from "@testing-library/user-event";
 const server = setupServer(
   rest.post("/user/create_user", (req, res, ctx) => {
     return res(ctx.status(200));
+  }),
+  rest.get("/user/check_email", (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json({ check_email: false }));
   })
 );
 //---------------------------------------------------------------------------------------
@@ -48,11 +51,7 @@ describe("Testing SignUp component", () => {
     ).toBeVisible();
     expect(screen.getByLabelText("Enter city name")).toBeVisible();
     expect(screen.getByLabelText("Enter street name")).toBeVisible();
-    expect(
-      screen.getByLabelText(
-        "Enter appartment name or building name and floor number"
-      )
-    ).toBeVisible();
+    expect(screen.getByLabelText(/enter appartment/i)).toBeVisible();
     expect(screen.getByLabelText("Enter ZIP/Postal code")).toBeVisible();
   });
   //---------------------------------------------------------------------------------------------
@@ -74,11 +73,29 @@ describe("Testing SignUp component", () => {
     });
     //assertions
     expect(screen.getByLabelText("Invalid email address")).toBeVisible();
-    expect(
-      screen.getByLabelText(
-        "The password size must be at least 8, and it should contains at least one lowercase, uppercase, number, and special character"
-      )
-    ).toBeVisible();
+    expect(screen.getByLabelText(/the password size/i)).toBeVisible();
+  });
+  //--------------------------------------------------------------------------------------------
+
+  test("Testing the component when email already used", () => {
+    //overriding the mock server method to show that this email is already used
+    server.use(
+      rest.get("/user/check_email", (req, res, ctx) => {
+        return res(ctx.status(200), ctx.json({ check_email: true }));
+      })
+    );
+    //rendering the component
+    render(
+      <BrowserRouter>
+        <SignUp />
+      </BrowserRouter>
+    );
+    //writing an email address
+    fireEvent.change(screen.getByPlaceholderText("Email Address"), {
+      target: { value: "testtest@test.com" },
+    });
+    //assertions
+    expect(screen.getByLabelText("Email already used")).toBeVisible();
   });
   //--------------------------------------------------------------------------------------------
 
@@ -170,7 +187,7 @@ describe("Testing SignUp component", () => {
     //overriding the mock server so it returns an error
     server.use(
       rest.post("/user/create_user", (req, res, ctx) => {
-        return res(ctx.status(404, "Email already used"));
+        return res(ctx.status(500, "Server error"));
       })
     );
     //rendering the component
@@ -228,7 +245,7 @@ describe("Testing SignUp component", () => {
     //clicking sign up button
     fireEvent.click(screen.getByRole("button", { name: /sign up/i }));
     //assertions
-    expect(screen.getByText("Error: Email already used")).toBeVisible();
+    expect(screen.getByText("Error: Server error")).toBeVisible();
   });
   //-----------------------------------------------------------------------------------------------
 });

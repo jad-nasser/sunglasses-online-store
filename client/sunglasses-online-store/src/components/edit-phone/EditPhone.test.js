@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import { BrowserRouter } from "react-router-dom";
-import EditName from "./EditName";
+import EditPhone from "./EditPhone";
 //----------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------
 
@@ -22,46 +22,41 @@ afterAll(() => server.close());
 //--------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------
 
-describe("Testing EditName component", () => {
+describe("Testing EditPhone component", () => {
   test("Testing the component when the input fields are empty", () => {
     //rendering the component
     render(
       <BrowserRouter>
-        <EditName />
+        <EditPhone />
       </BrowserRouter>
     );
-    //clicking the change name button
-    fireEvent.click(screen.getByRole("button", { name: /change name/i }));
+    //clicking the change phone button
+    fireEvent.click(screen.getByRole("button", { name: /change phone/i }));
     //assertions
-    expect(screen.getByLabelText("Enter new first name")).toBeVisible();
-    expect(screen.getByLabelText("Enter new last name")).toBeVisible();
+    expect(screen.getByLabelText("Enter new phone number")).toBeVisible();
   });
   //----------------------------------------------------------------------
 
-  test("Testing the component when the user name successfully changed", () => {
+  test("Testing the component when the user phone number successfully changed", () => {
     //rendering the component
     render(
       <BrowserRouter>
-        <EditName />
+        <EditPhone />
       </BrowserRouter>
     );
-    //entering first name
-    fireEvent.change(screen.getByPlaceholderText("New First Name"), {
-      target: { value: "Test" },
+    //entering an phone number
+    fireEvent.change(screen.getByPlaceholderText("New phone number"), {
+      target: { value: 544465945545 },
     });
-    //entering last name
-    fireEvent.change(screen.getByPlaceholderText("New Last Name"), {
-      target: { value: "Test" },
-    });
-    //clicking the change name button
-    fireEvent.click(screen.getByRole("button", { name: /change name/i }));
+    //clicking the change phone button
+    fireEvent.click(screen.getByRole("button", { name: /change phone/i }));
     //assertions
-    expect(screen.getByText("Name successfully changed")).toBeVisible();
+    expect(screen.getByText("Phone number successfully changed")).toBeVisible();
   });
   //-------------------------------------------------------------------------
 
-  test("Testing the component when the server rejects the changes", () => {
-    //changing the mock server method
+  test("Testing the component when the server rejects the phone change", () => {
+    //overriding the mock server method
     server.use(
       rest.patch("/user/update_user", (req, res, ctx) => {
         return res(ctx.status(500, "Server error"));
@@ -70,23 +65,18 @@ describe("Testing EditName component", () => {
     //rendering the component
     render(
       <BrowserRouter>
-        <EditName />
+        <EditPhone />
       </BrowserRouter>
     );
-    //entering first name
-    fireEvent.change(screen.getByPlaceholderText("New First Name"), {
-      target: { value: "Test" },
+    //entering an phone number
+    fireEvent.change(screen.getByPlaceholderText("New phone number"), {
+      target: { value: 466546476565 },
     });
-    //entering last name
-    fireEvent.change(screen.getByPlaceholderText("New Last Name"), {
-      target: { value: "Test" },
-    });
-    //clicking the change name button
-    fireEvent.click(screen.getByRole("button", { name: /change name/i }));
+    fireEvent.click(screen.getByRole("button", { name: /change phone/i }));
     //assertions
     expect(screen.getByText("Error: Server error")).toBeVisible();
   });
-  //------------------------------------------------------------------------------
+  //----------------------------------------------------------------------
 });
 //----------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------
