@@ -103,7 +103,7 @@ describe("Testing EditEmail component", () => {
   test("Testing the component when the entered email is already used", () => {
     //overriding the mock server method
     server.use(
-      rest.get("/user/chech_email", (req, res, ctx) => {
+      rest.get("/user/check_email", (req, res, ctx) => {
         return res(ctx.status(200), ctx.json({ check_email: true }));
       })
     );
