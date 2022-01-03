@@ -31,6 +31,12 @@ const server = setupServer(
 //-----------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------
 
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
+//-----------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------
+
 describe("Testing AccountInfo component", function () {
   test("Testing the component with a user that has verified email and phone", () => {
     //altering the user so it have verified phone and email
