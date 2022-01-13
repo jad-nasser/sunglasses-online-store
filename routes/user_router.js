@@ -25,6 +25,7 @@ router.post("/user_login", user_controller.user_login);
 //only the user can delete its own account
 router.delete(
   "/delete_user",
+  user_controller.readCookie,
   user_controller.authenticateCustomerToken,
   user_controller.delete_user
 );
@@ -34,6 +35,7 @@ router.delete(
 //only the user can update its own account
 router.patch(
   "/update_user",
+  user_controller.readCookie,
   user_controller.authenticateCustomerToken,
   user_controller.email_validate,
   user_controller.password_validate,
@@ -45,6 +47,7 @@ router.patch(
 //get logged in user info
 router.get(
   "/get_user",
+  user_controller.readCookie,
   user_controller.authenticateCustomerToken,
   user_controller.get_user
 );
@@ -58,6 +61,7 @@ router.get("/check_email", user_controller.check_email);
 //the user can only check his/her password
 router.get(
   "/check_password",
+  user_controller.readCookie,
   user_controller.authenticateCustomerToken,
   user_controller.check_password
 );
@@ -67,6 +71,7 @@ router.get(
 //this method is to verify the email address of a customer
 router.post(
   "/verify_email_for_testing_only",
+  user_controller.readCookie,
   user_controller.authenticateCustomerToken,
   user_controller.verify_email_for_testing_only
 );
@@ -76,6 +81,7 @@ router.post(
 //this method is to verify phone number of a customer
 router.post(
   "/verify_phone_for_testing_only",
+  user_controller.readCookie,
   user_controller.authenticateCustomerToken,
   user_controller.verify_phone_for_testing_only
 );

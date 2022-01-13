@@ -43,6 +43,7 @@ const upload = multer({
 //The seller only can create a item
 router.post(
   "/create_item",
+  user_controller.readCookie,
   user_controller.authenticateSellerToken,
   upload.array("ItemImage", 10),
   item_controller.create_item
@@ -57,6 +58,7 @@ router.get("/get_items", item_controller.get_items);
 //onlt the seller can update items
 router.patch(
   "/update_items",
+  user_controller.readCookie,
   user_controller.authenticateSellerToken,
   upload.array("ItemImage", 10),
   item_controller.update_items

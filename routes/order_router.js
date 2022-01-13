@@ -12,6 +12,7 @@ const router = express.Router();
 //get all orders for a specific customer
 router.get(
   "/get_customer_orders",
+  user_controller.readCookie,
   user_controller.authenticateCustomerToken,
   order_controller.get_customer_orders
 );
@@ -21,6 +22,7 @@ router.get(
 //this is only for the seller
 router.get(
   "/get_orders",
+  user_controller.readCookie,
   user_controller.authenticateSellerToken,
   order_controller.get_orders
 );
@@ -30,6 +32,7 @@ router.get(
 //only the seller can update the orders
 router.patch(
   "/update_orders",
+  user_controller.readCookie,
   user_controller.authenticateSellerToken,
   order_controller.update_orders
 );
@@ -39,6 +42,7 @@ router.patch(
 //the customer can only create orders
 router.post(
   "/create_orders",
+  user_controller.readCookie,
   user_controller.authenticateCustomerToken,
   order_controller.create_orders
 );

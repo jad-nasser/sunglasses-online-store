@@ -92,14 +92,24 @@ async function user_login(req, res) {
       process.env.SELLER_LOGIN_TOKEN_SECRET,
       { expiresIn: "24h" }
     );
-    return res.json({ token: seller_token });
+    res.cookie("token", JSON.stringify({ token: seller_token }), {
+      secure: false,
+      httpOnly: true,
+      expires: new Date(Date.now() + 1 * 1000 * 60 * 60 * 24),
+    });
+    return res.status(200).json({ token: seller_token });
   } else if (found_user.user_type === "customer") {
     const customer_token = jwt.sign(
       user_token_info,
       process.env.CUSTOMER_LOGIN_TOKEN_SECRET,
       { expiresIn: "24h" }
     );
-    return res.json({ token: customer_token });
+    res.cookie("token", JSON.stringify({ token: customer_token }), {
+      secure: false,
+      httpOnly: true,
+      expires: new Date(Date.now() + 1 * 1000 * 60 * 60 * 24),
+    });
+    return res.status(200).json({ token: customer_token });
   }
 }
 //-------------------------------------------------------------------------------------------
@@ -125,6 +135,16 @@ function authenticateSellerToken(req, res, next) {
     req.user = user;
     next();
   });
+}
+//----------------------------------------------------------------------------------------------
+
+//read cookie middleware function
+//this function is used to read the authentication info in cookies sent by users
+function readCookie(req, res, next) {
+  if (!req.cookies || !req.cookies.token)
+    return res.status(404).send("No token found");
+  req.headers.authorization = "Bearer " + req.cookies.token;
+  next();
 }
 //----------------------------------------------------------------------------------------------
 
@@ -387,4 +407,5 @@ module.exports = {
   get_user,
   check_password,
   check_email,
+  readCookie,
 };

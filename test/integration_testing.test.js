@@ -200,7 +200,7 @@ describe("Testing user router", function () {
         function (cb) {
           request(app)
             .delete("/user/delete_user")
-            .set("Authorization", "Bearer " + token)
+            .set("Cookie", ["token=" + token])
             .expect(function (res) {
               expect(res.text).to.be.contain("successfully deleted");
             })
@@ -238,86 +238,10 @@ describe("Testing user router", function () {
         function (cb) {
           request(app)
             .patch("/user/update_user")
-            .set("Authorization", "Bearer " + token)
+            .set("Cookie", ["token=" + token])
             .send({ first_name: "Matt" })
             .expect(function (res) {
               expect(res.text).to.be.contain("User successfully updated.");
-            })
-            .expect(200, cb);
-        },
-      ],
-      done
-    );
-  });
-  //-----------------------------------------------------------------------------------------
-
-  //Testing /user/verify_email_for_testing_only by creating a user and then verify its email, it should
-  //return a 200 response with a success message
-  it("Testing /user/verify_email_for_testing_only by creating a user and then verify its email, it should return a 200 response with a success message", function (done) {
-    //create variable for token
-    let token = null;
-    //creating the user
-    let user = new User(test_user1);
-    user.save();
-    //sending requests
-    asyncs.series(
-      [
-        //making login request to get the token
-        function (cb) {
-          request(app)
-            .post("/user/user_login")
-            .send(email_password)
-            .expect(function (res) {
-              res.text = JSON.parse(res.text);
-              token = res.text.token;
-            })
-            .expect(200, cb);
-        },
-        //sending the verify request and this request contains the token
-        function (cb) {
-          request(app)
-            .post("/user/verify_email_for_testing_only")
-            .set("Authorization", "Bearer " + token)
-            .expect(function (res) {
-              expect(res.text).to.be.contain("succesfully verified");
-            })
-            .expect(200, cb);
-        },
-      ],
-      done
-    );
-  });
-  //-----------------------------------------------------------------------------------------
-
-  //Testing /user/verify_phone_for_testing_only by creating a user and then verify its phone, it should
-  //return a 200 response with a success message
-  it("Testing /user/verify_phone_for_testing_only by creating a user and then verify its phone, it should return a 200 response with a success message", function (done) {
-    //create variable for token
-    let token = null;
-    //creating the user
-    let user = new User(test_user1);
-    user.save();
-    //sending requests
-    asyncs.series(
-      [
-        //making login request to get the token
-        function (cb) {
-          request(app)
-            .post("/user/user_login")
-            .send(email_password)
-            .expect(function (res) {
-              res.text = JSON.parse(res.text);
-              token = res.text.token;
-            })
-            .expect(200, cb);
-        },
-        //sending the verify request and this request contains the token
-        function (cb) {
-          request(app)
-            .post("/user/verify_phone_for_testing_only")
-            .set("Authorization", "Bearer " + token)
-            .expect(function (res) {
-              expect(res.text).to.be.contain("succesfully verified");
             })
             .expect(200, cb);
         },
@@ -346,7 +270,7 @@ describe("Testing user router", function () {
     //sending get_user request
     await request(app)
       .get("/user/get_user")
-      .set("Authorization", "Bearer " + token)
+      .set("Cookie", ["token=" + token])
       .expect(function (res) {
         res.text = JSON.parse(res.text);
         final_res = res;
@@ -396,7 +320,7 @@ describe("Testing user router", function () {
     //sending check_password request
     await request(app)
       .get("/user/check_password")
-      .set("Authorization", "Bearer " + token)
+      .set("Cookie", ["token=" + token])
       .send(password)
       .expect(function (res) {
         res.text = JSON.parse(res.text);
@@ -439,7 +363,7 @@ describe("Testing item router", function () {
         function (cb) {
           request(app)
             .post("/item/create_item")
-            .set("Authorization", "Bearer " + token)
+            .set("Cookie", ["token=" + token])
             .field("name", test_item1.name)
             .field("brand", test_item1.brand)
             .field("size", test_item1.size)
@@ -487,7 +411,7 @@ describe("Testing item router", function () {
         function (cb) {
           request(app)
             .post("/item/create_item")
-            .set("Authorization", "Bearer " + token)
+            .set("Cookie", ["token=" + token])
             .field("name", test_item1.name)
             .field("brand", test_item1.brand)
             .field("size", test_item1.size)
@@ -504,7 +428,7 @@ describe("Testing item router", function () {
         function (cb) {
           request(app)
             .post("/item/create_item")
-            .set("Authorization", "Bearer " + token)
+            .set("Cookie", ["token=" + token])
             .field("name", test_item1.name + " 2")
             .field("brand", test_item1.brand)
             .field("size", test_item1.size)
@@ -565,7 +489,7 @@ describe("Testing item router", function () {
     //sending a request to create the first item
     await request(app)
       .post("/item/create_item")
-      .set("Authorization", "Bearer " + token)
+      .set("Cookie", ["token=" + token])
       .field("name", test_item1.name)
       .field("brand", test_item1.brand)
       .field("size", test_item1.size)
@@ -582,7 +506,7 @@ describe("Testing item router", function () {
     //sending a request to create the second item
     await request(app)
       .post("/item/create_item")
-      .set("Authorization", "Bearer " + token)
+      .set("Cookie", ["token=" + token])
       .field("name", test_item1.name + " 2")
       .field("brand", test_item1.brand)
       .field("size", test_item1.size)
@@ -599,7 +523,7 @@ describe("Testing item router", function () {
     //sending a request to update the two created items
     await request(app)
       .patch("/item/update_items")
-      .set("Authorization", "Bearer " + token)
+      .set("Cookie", ["token=" + token])
       .attach("ItemImage", "./test/test_images/pexels-expect-best-1035733.jpg");
     //getting the ImageLinksCount number of elements
     let noe3 = null;
@@ -610,7 +534,7 @@ describe("Testing item router", function () {
     //sending a request to update the second created item
     await request(app)
       .patch("/item/update_items")
-      .set("Authorization", "Bearer " + token)
+      .set("Cookie", ["token=" + token])
       .field("search[name]", "2")
       .attach("ItemImage", "./test/test_images/pexels-expect-best-1035733.jpg")
       .expect(function (res) {
@@ -676,7 +600,7 @@ describe("Testing order router", function () {
     //sending the create_orders request
     await request(app)
       .post("/order/create_orders")
-      .set("Authorization", "Bearer " + token)
+      .set("Cookie", ["token=" + token])
       .send({ items: items })
       .expect(function (res) {
         res.text = JSON.parse(res.text);
@@ -751,7 +675,7 @@ describe("Testing order router", function () {
     //sending the get_customer_orders request
     await request(app)
       .get("/order/get_customer_orders")
-      .set("Authorization", "Bearer " + token)
+      .set("Cookie", ["token=" + token])
       .expect(function (res) {
         res.text = JSON.parse(res.text);
         final_response = res;
@@ -798,7 +722,7 @@ describe("Testing order router", function () {
     //sending the get_orders request
     await request(app)
       .get("/order/get_orders")
-      .set("Authorization", "Bearer " + token)
+      .set("Cookie", ["token=" + token])
       .send({ item_name: "2" })
       .expect(function (res) {
         res.text = JSON.parse(res.text);
@@ -841,7 +765,7 @@ describe("Testing order router", function () {
     //sending the update_orders request
     await request(app)
       .patch("/order/update_orders")
-      .set("Authorization", "Bearer " + token)
+      .set("Cookie", ["token=" + token])
       .send({
         search: {
           item_name: "2",
@@ -899,7 +823,7 @@ describe("Testing order router", function () {
     //sending the create_orders request to create the orders and to get the payment_intent_id
     await request(app)
       .post("/order/create_orders")
-      .set("Authorization", "Bearer " + token)
+      .set("Cookie", ["token=" + token])
       .send({ items: req_items })
       .expect(function (res) {
         res.text = JSON.parse(res.text);
@@ -960,7 +884,7 @@ describe("Testing order router", function () {
     //sending the create_orders request to create the orders and to get the payment_intent_id
     await request(app)
       .post("/order/create_orders")
-      .set("Authorization", "Bearer " + token)
+      .set("Cookie", ["token=" + token])
       .send({ items: req_items })
       .expect(function (res) {
         res.text = JSON.parse(res.text);

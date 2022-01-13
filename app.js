@@ -3,6 +3,7 @@ const express = require("express");
 const path = require("path");
 const bodyparser = require("body-parser");
 const cors = require("cors");
+const cookieparser = require("cookie-parser");
 //--------------------------------------------------------------------------
 
 //importing router files
@@ -18,6 +19,7 @@ const app = express();
 //adding middlewares
 app.use(cors());
 app.use(bodyparser.json());
+app.use(cookieparser());
 //------------------------------------------------------------------------------
 
 //initialising routes
