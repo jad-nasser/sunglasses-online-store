@@ -148,6 +148,34 @@ function readCookie(req, res, next) {
 }
 //----------------------------------------------------------------------------------------------
 
+//this function is to check if the customer is logged in
+function check_customer_login(req, res) {
+  if (!req.cookies || !req.cookies.token) return res.send(false);
+  jwt.verify(
+    req.cookies.token,
+    process.env.CUSTOMER_LOGIN_TOKEN_SECRET,
+    (err, user) => {
+      if (err) return res.send(false);
+      return res.send(true);
+    }
+  );
+}
+//---------------------------------------------------------------------------------------------
+
+//this function is to check if the seller is logged in
+function check_seller_login(req, res) {
+  if (!req.cookies || !req.cookies.token) return res.send(false);
+  jwt.verify(
+    req.cookies.token,
+    process.env.SELLER_LOGIN_TOKEN_SECRET,
+    (err, user) => {
+      if (err) return res.send(false);
+      return res.send(true);
+    }
+  );
+}
+//----------------------------------------------------------------------------------------------
+
 //delete a user
 //only the user can delete its own account
 async function delete_user(req, res) {
@@ -408,4 +436,6 @@ module.exports = {
   check_password,
   check_email,
   readCookie,
+  check_seller_login,
+  check_customer_login,
 };

@@ -67,6 +67,14 @@ router.get(
 );
 //--------------------------------------------------------------------------------------------------------
 
+//checks if a customers is logged in
+router.get("/check_customer_login", user_controller.check_customer_login);
+//------------------------------------------------------------------------------------------
+
+//checks if the seller is logged in
+router.get("/check_seller_login", user_controller.check_seller_login);
+//-------------------------------------------------------------------------------------------
+
 //this method is for testing only you should use an api to verify email address
 //this method is to verify the email address of a customer
 router.post(

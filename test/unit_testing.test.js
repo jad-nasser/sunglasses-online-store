@@ -1,6 +1,7 @@
 //importing modules
 var chai = require("chai");
 var expect = chai.expect;
+var jwt = require("jsonwebtoken");
 const sinon = require("sinon");
 const proxyquire = require("proxyquire");
 //-------------------------------------------------------------------------------------
@@ -940,6 +941,186 @@ describe("Tesing user controller", function () {
   });
   //-------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------
+
+  describe("Testing readCookie middleware", function () {
+    it('Should return 404 response with a message "No token found"', function () {
+      //creating request and response
+      let res = Object.assign({}, response);
+      let req = {
+        body: {},
+        headers: {},
+      };
+      //calling the tested method
+      user_controller.readCookie(req, res, () => {});
+      //assertions
+      expect(res.status_number).to.be.equal(404);
+      expect(res.text).to.be.equal("No token found");
+    });
+    //---------------------------------------------------------------------------------
+
+    it('The request header should contain "Bearer 1234"', function () {
+      //creating request and response
+      let res = Object.assign({}, response);
+      let req = {
+        body: {},
+        headers: {},
+        cookies: {
+          token: "1234",
+        },
+      };
+      //calling the tested method
+      user_controller.readCookie(req, res, () => {});
+      //assertions
+      expect(req.headers.authorization).to.be.equal("Bearer 1234");
+    });
+    //----------------------------------------------------------------------------------
+  });
+  //-------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------
+
+  describe("Testing /user/check_customer_login", function () {
+    it("Should return false when calling without cookies", function () {
+      //creating request and response
+      let res = Object.assign({}, response);
+      let req = {
+        body: {},
+      };
+      //calling the tested method
+      user_controller.check_customer_login(req, res);
+      //assertions
+      expect(res.text).to.be.false;
+    });
+    //-------------------------------------------------------------------
+
+    it("Should return false when calling with cookies but the cookies dont contain a token", function () {
+      //creating request and response
+      let res = Object.assign({}, response);
+      let req = {
+        body: {},
+        cookies: {},
+      };
+      //calling the tested method
+      user_controller.check_customer_login(req, res);
+      //assertions
+      expect(res.text).to.be.false;
+    });
+    //-------------------------------------------------------------------------------------------
+
+    it("Should return false when calling with a not valid token", function () {
+      //creating request and response
+      let res = Object.assign({}, response);
+      let req = {
+        body: {},
+        cookies: {
+          token: "1234",
+        },
+      };
+      //calling the tested method
+      user_controller.check_customer_login(req, res);
+      //assertions
+      expect(res.text).to.be.false;
+    });
+    //----------------------------------------------------------------------------------------
+
+    it("Should return true", function () {
+      //creating a valid customer token
+      let user_info = {
+        _id: "1234",
+        user_type: "customer",
+      };
+      const token = jwt.sign(
+        user_info,
+        process.env.CUSTOMER_LOGIN_TOKEN_SECRET,
+        { expiresIn: "24h" }
+      );
+      //creating request and response
+      let res = Object.assign({}, response);
+      let req = {
+        body: {},
+        cookies: {
+          token: token,
+        },
+      };
+      //calling the tested method
+      user_controller.check_customer_login(req, res);
+      //assertions
+      expect(res.text).to.be.true;
+    });
+    //--------------------------------------------------------------------------------
+  });
+  //---------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------
+
+  describe("Testing /user/check_seller_login", function () {
+    it("Should return false when calling without cookies", function () {
+      //creating request and response
+      let res = Object.assign({}, response);
+      let req = {
+        body: {},
+      };
+      //calling the tested method
+      user_controller.check_seller_login(req, res);
+      //assertions
+      expect(res.text).to.be.false;
+    });
+    //-------------------------------------------------------------------
+
+    it("Should return false when calling with cookies but the cookies dont contain a token", function () {
+      //creating request and response
+      let res = Object.assign({}, response);
+      let req = {
+        body: {},
+        cookies: {},
+      };
+      //calling the tested method
+      user_controller.check_seller_login(req, res);
+      //assertions
+      expect(res.text).to.be.false;
+    });
+    //-------------------------------------------------------------------------------------------
+
+    it("Should return false when calling with a not valid token", function () {
+      //creating request and response
+      let res = Object.assign({}, response);
+      let req = {
+        body: {},
+        cookies: {
+          token: "1234",
+        },
+      };
+      //calling the tested method
+      user_controller.check_seller_login(req, res);
+      //assertions
+      expect(res.text).to.be.false;
+    });
+    //----------------------------------------------------------------------------------------
+
+    it("Should return true", function () {
+      //creating a valid seller token
+      let user_info = {
+        _id: "1234",
+        user_type: "seller",
+      };
+      const token = jwt.sign(user_info, process.env.SELLER_LOGIN_TOKEN_SECRET, {
+        expiresIn: "24h",
+      });
+      //creating request and response
+      let res = Object.assign({}, response);
+      let req = {
+        body: {},
+        cookies: {
+          token: token,
+        },
+      };
+      //calling the tested method
+      user_controller.check_seller_login(req, res);
+      //assertions
+      expect(res.text).to.be.true;
+    });
+    //--------------------------------------------------------------------------------
+  });
+  //---------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------
 });
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
