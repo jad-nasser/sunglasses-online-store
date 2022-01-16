@@ -176,6 +176,17 @@ function check_seller_login(req, res) {
 }
 //----------------------------------------------------------------------------------------------
 
+//this function is for user sign out
+function sign_out(req, res) {
+  res.cookie("token", "", {
+    secure: false,
+    httpOnly: true,
+    expires: new Date(Date.now() - 1 * 1000 * 60 * 60 * 24),
+  });
+  return res.status(200).send("Successfully signed out");
+}
+//----------------------------------------------------------------------------------------------
+
 //delete a user
 //only the user can delete its own account
 async function delete_user(req, res) {
@@ -438,4 +449,5 @@ module.exports = {
   readCookie,
   check_seller_login,
   check_customer_login,
+  sign_out,
 };
