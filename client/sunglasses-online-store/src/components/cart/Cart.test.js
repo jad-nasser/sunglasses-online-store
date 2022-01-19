@@ -152,7 +152,7 @@ describe("Testing Cart component", () => {
   });
   //-------------------------------------------------------------------------
 
-  test('Testing the component with a logged in user and clicking the "Proceed Order button", the items should be removed from the local storage', () => {
+  test('Testing the component with a logged in user and clicking the "Proceed Order button", the items should be removed from the local storage and payment component should be displayed contains a button called "next" ', () => {
     //saving some items in the local storage
     localStorage.setItem("items", local_storage_items);
     //rendering the component
@@ -165,6 +165,7 @@ describe("Testing Cart component", () => {
     fireEvent.click(screen.getByRole("button", { name: "Proceed Order" }));
     //assertions
     expect(!localStorage.getItem("items")).toBe(true);
+    expect(screen.getByRole("button", { name: "next" })).toBeVisible();
   });
   //------------------------------------------------------------------------------
 
