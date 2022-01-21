@@ -13,21 +13,31 @@ images[0] = "blablabla";
 items[0] = {
   name: "item1",
   price: 200,
+  quantity: 5,
   images,
 };
 items[1] = {
   name: "item1",
   price: 230,
+  quantity: 5,
   images,
 };
 items[2] = {
   name: "item2",
   price: 230,
+  quantity: 5,
   images,
 };
 items[3] = {
   name: "item3",
   price: 230,
+  quantity: 5,
+  images,
+};
+items[4] = {
+  name: "item4",
+  price: 230,
+  quantity: 0,
   images,
 };
 //-------------------------------------------------------------------
@@ -46,7 +56,7 @@ afterAll(() => server.close());
 //------------------------------------------------------------------
 
 describe("Testing UserItems component", () => {
-  test('it should render 3 UserItem component named as follows: "item1, item2, item3" ', () => {
+  test("it should render 3 UserItem component item1, item2, item3 and item1 should not be rendered twice and item4 should not be rendered ", () => {
     //rendering the component
     render(
       <BrowserRouter>
