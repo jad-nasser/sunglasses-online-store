@@ -90,6 +90,7 @@ async function find_orders_for_seller(search_info) {
         item_color: 1,
         item_price: 1,
         shipment_id: 1,
+        _id: 1,
         total_price: { $multiply: ["$item_price", "$quantity"] },
       },
     },
