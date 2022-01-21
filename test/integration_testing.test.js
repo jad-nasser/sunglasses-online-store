@@ -102,7 +102,7 @@ const test_order1 = {
 const test_order2 = {
   item_id: "34",
   user_id: "1234",
-  quantity: 1,
+  quantity: 2,
   item_name: test_item2.name,
   item_brand: test_item2.brand,
   item_size: test_item2.size,
@@ -698,14 +698,19 @@ describe("Testing order router", function () {
   //--------------------------------------------------------------------------------
 
   //Testing /order/get_orders it should return a 200 response with a one order
-  it("Testing /order/get_orders it should return a 200 response with a one order", async function () {
+  it("Testing /order/get_orders it should return a 200 response with a one order that contains user_info and total_price = 460", async function () {
     //creating the seller
     let user = new User(test_user2);
     await user.save();
+    //creating the customer
+    let user2 = new User(test_user1);
+    await user2.save();
     //creating the orders but the created user have only one order
     let orders = [];
     orders[0] = test_order1;
+    orders[0].user_id = user2._id;
     orders[1] = test_order2;
+    orders[1].user_id = user2._id;
     await Order.insertMany(orders);
     //creating final response variable
     let final_response = null;
@@ -739,6 +744,8 @@ describe("Testing order router", function () {
     expect(final_response.statusCode).to.be.equal(200);
     expect(Array.isArray(final_response.text)).to.be.true;
     expect(final_response.text.length).to.be.equal(1);
+    expect(final_response.text[0].user_info).to.be.exist;
+    expect(final_response.text[0].total_price).to.be.equal(460);
   });
   //--------------------------------------------------------------------------------
 

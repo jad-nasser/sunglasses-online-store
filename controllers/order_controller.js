@@ -40,7 +40,7 @@ async function get_orders(req, res) {
 
   //getting the orders from the database
   try {
-    const found_orders = await order_database_controller.find_orders(
+    const found_orders = await order_database_controller.find_orders_for_seller(
       search_info
     );
     return res.json(found_orders);

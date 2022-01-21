@@ -1448,7 +1448,7 @@ describe("Testing order controller", function () {
       });
       let controller = proxyquire("../controllers/order_controller", {
         "../database_controllers/order_database_controller": {
-          find_orders: stub1,
+          find_orders_for_seller: stub1,
         },
       });
       //calling the tested method
