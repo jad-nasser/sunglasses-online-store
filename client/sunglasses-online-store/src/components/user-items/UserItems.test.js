@@ -56,7 +56,7 @@ afterAll(() => server.close());
 //------------------------------------------------------------------
 
 describe("Testing UserItems component", () => {
-  test("it should render 3 UserItem component item1, item2, item3 and item1 should not be rendered twice and item4 should not be rendered ", () => {
+  test("it should render 3 UserItem component item1, item2, item3 and item1 should not be rendered twice and item4 should not be rendered because it has zero quantity", () => {
     //rendering the component
     render(
       <BrowserRouter>
