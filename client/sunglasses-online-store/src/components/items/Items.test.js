@@ -123,30 +123,6 @@ describe("Testing Items component", () => {
     expect(screen.getByRole("button", { name: "Update" })).toBeDisabled();
   });
   //----------------------------------------------------------------------
-
-  test("Testing the component when the query not find any item, the update button should be disabled", () => {
-    //mocking the server to be not find any item
-    server.use(
-      rest.get("/item/get_items", (req, res, ctx) => {
-        return res(ctx.status(200), ctx.json([]));
-      })
-    );
-    //rendering the component
-    render(
-      <BrowserRouter>
-        <Items requestBody={{}} />
-      </BrowserRouter>
-    );
-    //clicking the "Substract" radio button
-    fireEvent.click(screen.getByLabelText("Substract"));
-    //changing the value
-    fireEvent.change(screen.getByPlaceholderText("Value to substract"), {
-      target: { value: "2" },
-    });
-    //assertions
-    expect(screen.getByRole("button", { name: "Update" })).toBeDisabled();
-  });
-  //----------------------------------------------------------------------
 });
 //--------------------------------------------------------------
 //------------------------------------------------------------
