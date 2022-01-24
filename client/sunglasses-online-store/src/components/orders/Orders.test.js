@@ -4,7 +4,6 @@ import Orders from "./Orders";
 import { BrowserRouter } from "react-router-dom";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
-import { expect } from "chai";
 //--------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------
 
