@@ -72,15 +72,17 @@ describe("Testing ViewItem component", () => {
   });
   //-----------------------------------------------------------------------------------------
 
-  test('Testing the component without specifying the needed quantities, the "Add to cart" button should be disabled', () => {
+  test('Testing the component without specifying the needed quantities', () => {
     //rendering the component
     render(
       <BrowserRouter>
         <ViewItem items={items} />
       </BrowserRouter>
     );
+        //clicking the "Add to cart" button
+        fireEvent.click(screen.getByRole("button", { name: "Add to cart" }));
     //assertions
-    expect(screen.getByRole("button", { name: "Add to cart" })).toBeDisabled();
+    expect(screen.getByText("Enter the needed quantities")).toBeVisible();
   });
   //-------------------------------------------------------------------------------------------
 
