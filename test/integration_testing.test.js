@@ -73,6 +73,33 @@ const test_item2 = {
   quantity: 5,
   images: ["asd.jpg", "poi.jpg"],
 };
+const test_item3 = {
+  name: "Rounded",
+  brand: "Brand1",
+  price: 230,
+  size: "50 50-150",
+  color: "Blue glasses, black metal",
+  quantity: 5,
+  images: ["qwe.jpg", "zxc.jpg"],
+};
+const test_item4 = {
+  name: "Rounded 2",
+  brand: "Brand2",
+  price: 230,
+  size: "50 50-150",
+  color: "Blue glasses, black metal",
+  quantity: 5,
+  images: ["asd.jpg", "poi.jpg"],
+};
+const test_item5 = {
+  name: "Rounded 2",
+  brand: "Brand1",
+  price: 230,
+  size: "50 50-150",
+  color: "Blue glasses, black metal",
+  quantity: 5,
+  images: ["asd.jpg", "poi.jpg"],
+};
 const verified_test_user1 = {
   first_name: "Karl",
   last_name: "Mark",
@@ -556,6 +583,30 @@ describe("Testing item router", function () {
     expect(final_response.text).to.be.contain("success");
   });
   //-----------------------------------------------------------------------------------------
+
+  it("Testing /item/get_all_brands it should return a 200 response with 2 brands", async function () {
+    //create variable for the final response
+    let final_response = null;
+    //creating the items in the database
+    let items = [];
+    items[0] = new Item(test_item3);
+    items[1] = new Item(test_item4);
+    items[2] = new Item(test_item5);
+    await Item.insertMany(items);
+    //sending a request to get all the available brands
+    await request(app)
+      .get("/item/get_all_brands")
+      .expect(function (res) {
+        res.text = JSON.parse(res.text);
+        final_response = res;
+      });
+    //assertions
+    expect(final_response.statusCode).to.be.equal(200);
+    expect(final_response.text.brands).to.be.exist;
+    expect(final_response.text.brands.length).to.be.equal(2);
+    expect(final_response.text.brands[0] !== final_response.text.brands[1]).to
+      .be.true;
+  });
 });
 //----------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------

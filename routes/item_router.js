@@ -65,4 +65,8 @@ router.patch(
 );
 //-----------------------------------------------------------------
 
+//get all available brands
+router.get("/get_all_brands", item_controller.get_all_brands);
+//--------------------------------------------------------------------------
+
 module.exports = router;

@@ -35,10 +35,18 @@ async function update_item(items_info, update_info) {
 }
 //---------------------------------------------------------------------------------------------
 
+//find and return all available brands names
+async function find_all_brands() {
+  const found_brands = await Item.distinct("brand");
+  return found_brands;
+}
+//-------------------------------------------------------------------------------------------
+
 module.exports = {
   create_item,
   find_items,
   update_items,
   find_item,
   update_item,
+  find_all_brands,
 };

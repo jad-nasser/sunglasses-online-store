@@ -180,8 +180,20 @@ async function update_items(req, res) {
 }
 //-----------------------------------------------------------------
 
+//getting all the available brands
+async function get_all_brands(req, res) {
+  try {
+    let found_brands = await item_database_controller.find_all_brands();
+    return res.json({ brands: found_brands });
+  } catch (err) {
+    res.status(500).send(err);
+  }
+}
+//---------------------------------------------------------------------------
+
 module.exports = {
   create_item,
   get_items,
   update_items,
+  get_all_brands,
 };
