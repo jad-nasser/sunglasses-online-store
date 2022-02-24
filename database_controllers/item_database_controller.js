@@ -40,7 +40,7 @@ async function find_all_brands() {
   const found_brands = await Item.distinct("brand");
   return found_brands;
 }
-//-------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------
 
 module.exports = {
   create_item,

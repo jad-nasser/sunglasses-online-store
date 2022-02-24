@@ -63,7 +63,7 @@ router.patch(
   upload.array("ItemImage", 10),
   item_controller.update_items
 );
-//-----------------------------------------------------------------
+//------------------------------------------------------------------------
 
 //get all available brands
 router.get("/get_all_brands", item_controller.get_all_brands);
