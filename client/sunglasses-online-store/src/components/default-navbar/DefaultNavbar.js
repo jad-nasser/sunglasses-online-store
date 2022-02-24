@@ -11,17 +11,15 @@ const DefaultNavbar = (props) => {
   //getting all the brands from the database
   useEffect(() => {
     const client = axios.create({
-      baseURL: "http://localhost:5000/",
+      baseURL: process.env.REACT_APP_BASE_URL,
     });
-    client
-      .get("/item/get_all_brands")
-      .then(function (res) {
-        if (!res.brands) return;
-        setBrands(res.brands);
-      })
-      .catch(function (err) {
-        console.log(err);
-      });
+    const getBrandsFromDB = async () => {
+      let res = await client.get("item/get_all_brands");
+      if (!res || !res.data || !res.data.brands) return;
+      setBrands(res.data.brands);
+      return;
+    };
+    getBrandsFromDB();
   }, []);
   //making a list of brands for <select>
   const brandsList = brands.map((brand, index) => (
