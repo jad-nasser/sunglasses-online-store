@@ -1,3 +1,4 @@
+//importing modules
 import React from "react";
 import { Link } from "react-router-dom";
 //user item is made up of many sunglasses items that has the same name.

@@ -1,0 +1,6 @@
+.white-text-btn {
+  color: white;
+}
+.white-text-btn:hover {
+  color: gainsboro;
+}

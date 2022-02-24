@@ -1,13 +1,15 @@
+//import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+//import "../node_modules/bootstrap/dist/js/bootstrap.bundle.min";
 import "./App.css";
-import Home from "./components/home/Home";
+import DefaultNavbar from "./components/default-navbar/DefaultNavbar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <div className="App" data-testid="App-div">
+    <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<DefaultNavbar />} />
         </Routes>
       </BrowserRouter>
     </div>
