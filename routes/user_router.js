@@ -76,7 +76,7 @@ router.get("/check_seller_login", user_controller.check_seller_login);
 //-------------------------------------------------------------------------------------------
 
 //sign out a user
-router.delete("/user/sign_out", user_controller.sign_out);
+router.delete("/sign_out", user_controller.sign_out);
 //-----------------------------------------------------------------------------------
 
 //this method is for testing only you should use an api to verify email address
