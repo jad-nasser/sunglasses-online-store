@@ -64,9 +64,7 @@ const DefaultNavbar = (props) => {
               onChange={handleBrandSelection}
               value={selectedBrand}
             >
-              <option value="" selected>
-                All Brands
-              </option>
+              <option value="">All Brands</option>
               {brandsList}
             </select>
             <input
@@ -102,9 +100,9 @@ const DefaultNavbar = (props) => {
                   value="alphabetical"
                   id="alphabetical"
                   onClick={handleSortChange}
-                  checked
+                  defaultChecked
                 />
-                <label className="form-check-label" for="alphabetical">
+                <label className="form-check-label" htmlFor="alphabetical">
                   Sort by alphabetical order
                 </label>
               </div>
@@ -116,9 +114,8 @@ const DefaultNavbar = (props) => {
                   id="lowest-price"
                   value="lowest-price"
                   onClick={handleSortChange}
-                  checked
                 />
-                <label className="form-check-label" for="lowest-price">
+                <label className="form-check-label" htmlFor="lowest-price">
                   Sort by lowest price
                 </label>
               </div>
@@ -130,9 +127,8 @@ const DefaultNavbar = (props) => {
                   id="highest-price"
                   value="highest-price"
                   onClick={handleSortChange}
-                  checked
                 />
-                <label className="form-check-label" for="highest-price">
+                <label className="form-check-label" htmlFor="highest-price">
                   Sort by highest price
                 </label>
               </div>
@@ -144,9 +140,8 @@ const DefaultNavbar = (props) => {
                   id="most-ordered"
                   value="most-ordered"
                   onClick={handleSortChange}
-                  checked
                 />
-                <label className="form-check-label" for="most-ordered">
+                <label className="form-check-label" htmlFor="most-ordered">
                   Sort by most ordered
                 </label>
               </div>
