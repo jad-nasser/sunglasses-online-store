@@ -160,13 +160,27 @@ const CustomerNavbar = (props) => {
           >
             <i className="fas fa-shopping-cart"></i>
           </Link>
-          <Link
-            type="button"
-            className="btn white-text-btn btn-sm me-1 me-md-plus-2 px-1 px-md-plus-2"
-            to="/user/account_settings"
-          >
-            <i className="fa fa-solid fa-gear"></i>
-          </Link>
+          <div className="dropdown me-1 me-md-plus-2">
+            <button
+              type="button"
+              className="btn white-text-btn btn-sm"
+              data-bs-toggle="dropdown"
+            >
+              <i className="fa fa-solid fa-ellipsis-h"></i>
+            </button>
+            <ul className="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+              <li>
+                <Link className="dropdown-item" to="/user/my_orders">
+                  My Orders
+                </Link>
+              </li>
+              <li>
+                <Link className="dropdown-item" to="/user/account_settings">
+                  Account Settings
+                </Link>
+              </li>
+            </ul>
+          </div>
           <button
             type="button"
             className="btn btn-primary text-nowrap btn-sm"

@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-//this navbar is for the users that are logged in to the system
-const CustomerNavbar = (props) => {
+//this navbar is for the seller
+const SellerNavbar = () => {
   const [searchInput, setSearchInput] = useState("");
   const [itemsOrdersRadio, setItemsOrdersRadio] = useState("");
   const navigate = useNavigate();
@@ -108,4 +108,4 @@ const CustomerNavbar = (props) => {
     </nav>
   );
 };
-export default CustomerNavbar;
+export default SellerNavbar;

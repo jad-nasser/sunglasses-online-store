@@ -1,5 +1,5 @@
 import "./App.css";
-import SellerNavbar from "./components/seller-navbar/SellerNavbar";
+import Footer from "./components/footer/Footer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<SellerNavbar />} />
+          <Route path="/" element={<Footer />} />
         </Routes>
       </BrowserRouter>
     </div>
