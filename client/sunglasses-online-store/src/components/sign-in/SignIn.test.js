@@ -1,5 +1,5 @@
 //importing modules
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import SignIn from "./SignIn";
@@ -9,9 +9,15 @@ import { BrowserRouter } from "react-router-dom";
 
 //setting up the mock server
 const server = setupServer(
-  rest.post("/user/user-login", (req, res, ctx) => {
-    return res(ctx.status(404, "Email or password are not correct"));
-  })
+  rest.post(
+    process.env.REACT_APP_BASE_URL + "user/user_login",
+    (req, res, ctx) => {
+      return res(
+        ctx.status(404),
+        ctx.json("Email or password are not correct")
+      );
+    }
+  )
 );
 //-----------------------------------------------------------------------------
 //-------------------------------------------------------------------------------
@@ -33,12 +39,12 @@ describe("Testing SignIn component", () => {
     //clicking the sign in button
     fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
     //assertions
-    expect(screen.getByLabelText("Enter your email address")).toBeVisible();
-    expect(screen.getByLabelText("Enter your password")).toBeVisible();
+    expect(screen.getByText("Enter your email address")).toBeVisible();
+    expect(screen.getByText("Enter your password")).toBeVisible();
   });
   //----------------------------------------------------
 
-  test('It should display "Error: Email or password are not correct"', () => {
+  test('It should display "Error: Email or password are not correct"', async () => {
     //rendering the component
     render(
       <BrowserRouter>
@@ -54,6 +60,10 @@ describe("Testing SignIn component", () => {
     });
     //clicking the sign in button
     fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+    //waiting for the error alert to appear
+    await waitFor(() =>
+      screen.getByText("Error: Email or password are not correct")
+    );
     //assertions
     expect(
       screen.getByText("Error: Email or password are not correct")

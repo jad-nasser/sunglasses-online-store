@@ -4,3 +4,12 @@
 .white-text-btn:hover {
   color: gainsboro;
 }
+.container-form-width {
+  max-width: 30rem;
+  border: 1px solid gainsboro;
+}
+@media (max-width: 600px) {
+  .container-form-width {
+    border: 0;
+  }
+}
