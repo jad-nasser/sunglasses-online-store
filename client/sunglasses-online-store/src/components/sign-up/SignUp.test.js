@@ -1,5 +1,5 @@
 //importing modules
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import SignUp from "./SignUp";
 import { BrowserRouter } from "react-router-dom";
 import { rest } from "msw";
@@ -10,12 +10,18 @@ import userEvent from "@testing-library/user-event";
 
 //creating a mock server
 const server = setupServer(
-  rest.post("/user/create_user", (req, res, ctx) => {
-    return res(ctx.status(200));
-  }),
-  rest.get("/user/check_email", (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json({ check_email: false }));
-  })
+  rest.post(
+    process.env.REACT_APP_BASE_URL + "user/create_user",
+    (req, res, ctx) => {
+      return res(ctx.status(200));
+    }
+  ),
+  rest.get(
+    process.env.REACT_APP_BASE_URL + "user/check_email",
+    (req, res, ctx) => {
+      return res(ctx.status(200), ctx.json({ check_email: false }));
+    }
+  )
 );
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
@@ -37,22 +43,20 @@ describe("Testing SignUp component", () => {
     //clicking the sign up button
     fireEvent.click(screen.getByRole("button", { name: /sign up/i }));
     //assertions
-    expect(screen.getByLabelText("Enter your first name")).toBeVisible();
-    expect(screen.getByLabelText("Enter your last name")).toBeVisible();
-    expect(screen.getByLabelText("Enter your email address")).toBeVisible();
-    expect(screen.getByLabelText("Enter your phone number")).toBeVisible();
-    expect(screen.getByLabelText("Enter your account password")).toBeVisible();
+    expect(screen.getByText("Enter your first name")).toBeVisible();
+    expect(screen.getByText("Enter your last name")).toBeVisible();
+    expect(screen.getByText("Enter your email address")).toBeVisible();
+    expect(screen.getByText("Enter your phone number")).toBeVisible();
+    expect(screen.getByText("Enter your account password")).toBeVisible();
+    expect(screen.getByText("Confirm your account password")).toBeVisible();
+    expect(screen.getByText("Select country")).toBeVisible();
     expect(
-      screen.getByLabelText("Confirm your account password")
+      screen.getByText("Enter state, province, or county name")
     ).toBeVisible();
-    expect(screen.getByLabelText("Select country")).toBeVisible();
-    expect(
-      screen.getByLabelText("Enter state, province, or county name")
-    ).toBeVisible();
-    expect(screen.getByLabelText("Enter city name")).toBeVisible();
-    expect(screen.getByLabelText("Enter street name")).toBeVisible();
-    expect(screen.getByLabelText(/enter appartment/i)).toBeVisible();
-    expect(screen.getByLabelText("Enter ZIP/Postal code")).toBeVisible();
+    expect(screen.getByText("Enter city name")).toBeVisible();
+    expect(screen.getByText("Enter street name")).toBeVisible();
+    expect(screen.getByText(/enter appartment/i)).toBeVisible();
+    expect(screen.getByText("Enter ZIP/Postal code")).toBeVisible();
   });
   //---------------------------------------------------------------------------------------------
 
@@ -64,38 +68,18 @@ describe("Testing SignUp component", () => {
       </BrowserRouter>
     );
     //writing invalid email address
-    fireEvent.change(screen.getByPlaceholderText("Email Address"), {
+    fireEvent.change(screen.getByPlaceholderText("Email"), {
       target: { value: "blablabla" },
     });
     //writing an invalid password that don't match the password requirements
     fireEvent.change(screen.getByPlaceholderText("Password"), {
       target: { value: "qwerty" },
     });
+    //clicking the sign up button
+    fireEvent.click(screen.getByRole("button", { name: /sign up/i }));
     //assertions
-    expect(screen.getByLabelText("Invalid email address")).toBeVisible();
-    expect(screen.getByLabelText(/the password size/i)).toBeVisible();
-  });
-  //--------------------------------------------------------------------------------------------
-
-  test("Testing the component when email already used", () => {
-    //overriding the mock server method to show that this email is already used
-    server.use(
-      rest.get("/user/check_email", (req, res, ctx) => {
-        return res(ctx.status(200), ctx.json({ check_email: true }));
-      })
-    );
-    //rendering the component
-    render(
-      <BrowserRouter>
-        <SignUp />
-      </BrowserRouter>
-    );
-    //writing an email address
-    fireEvent.change(screen.getByPlaceholderText("Email Address"), {
-      target: { value: "testtest@test.com" },
-    });
-    //assertions
-    expect(screen.getByLabelText("Email already used")).toBeVisible();
+    expect(screen.getByText("Enter a valid email address")).toBeVisible();
+    expect(screen.getByText(/password length/i)).toBeVisible();
   });
   //--------------------------------------------------------------------------------------------
 
@@ -114,16 +98,14 @@ describe("Testing SignUp component", () => {
     fireEvent.change(screen.getByPlaceholderText("Confirm Password"), {
       target: { value: "blablabla" },
     });
+    //clicking the sign up button
+    fireEvent.click(screen.getByRole("button", { name: /sign up/i }));
     //assertions
-    expect(
-      screen.getByLabelText(
-        "The confirmed password don't match the actual password"
-      )
-    ).toBeVisible();
+    expect(screen.getByText("Confirm your account password")).toBeVisible();
   });
   //----------------------------------------------------------------------------------------------
 
-  test("Testing the component when everything is done correctly", () => {
+  test("Testing the component when everything is done correctly", async () => {
     //rendering the component
     render(
       <BrowserRouter>
@@ -139,20 +121,22 @@ describe("Testing SignUp component", () => {
       target: { value: "Test" },
     });
     //entering Email Address
-    fireEvent.change(screen.getByPlaceholderText("Email Address"), {
+    fireEvent.change(screen.getByPlaceholderText("Email"), {
       target: { value: "testtest@test.com" },
     });
+    //entering phone code
+    userEvent.selectOptions(screen.getByTestId("code"), "+44");
     //entering phone number
-    fireEvent.change(screen.getByPlaceholderText("Phone Number"), {
+    fireEvent.change(screen.getByPlaceholderText("Phone"), {
       target: { value: 12345 },
     });
     //entering password
     fireEvent.change(screen.getByPlaceholderText("Password"), {
-      target: { value: "qwertY7," },
+      target: { value: "Qw!7asdf" },
     });
     //entering password confirmation
     fireEvent.change(screen.getByPlaceholderText("Confirm Password"), {
-      target: { value: "qwertY7," },
+      target: { value: "Qw!7asdf" },
     });
     //entering state / province / county
     fireEvent.change(screen.getByPlaceholderText(/state/i), {
@@ -178,17 +162,22 @@ describe("Testing SignUp component", () => {
     userEvent.selectOptions(screen.getByTestId("country"), "United Kingdom");
     //clicking sign up button
     fireEvent.click(screen.getByRole("button", { name: /sign up/i }));
+    //wait for the success message to appear
+    await waitFor(() => screen.getByText("Account successfully created"));
     //assertions
     expect(screen.getByText("Account successfully created")).toBeVisible();
   });
   //----------------------------------------------------------------------------------------------
 
-  test("Testing the component when recieving an error request from the server", () => {
+  test("Testing the component when recieving an error request from the server", async () => {
     //overriding the mock server so it returns an error
     server.use(
-      rest.post("/user/create_user", (req, res, ctx) => {
-        return res(ctx.status(500, "Server error"));
-      })
+      rest.post(
+        process.env.REACT_APP_BASE_URL + "user/create_user",
+        (req, res, ctx) => {
+          return res(ctx.status(500), ctx.json("Server error"));
+        }
+      )
     );
     //rendering the component
     render(
@@ -205,20 +194,22 @@ describe("Testing SignUp component", () => {
       target: { value: "Test" },
     });
     //entering Email Address
-    fireEvent.change(screen.getByPlaceholderText("Email Address"), {
+    fireEvent.change(screen.getByPlaceholderText("Email"), {
       target: { value: "testtest@test.com" },
     });
+    //entering phone code
+    userEvent.selectOptions(screen.getByTestId("code"), "+44");
     //entering phone number
-    fireEvent.change(screen.getByPlaceholderText("Phone Number"), {
+    fireEvent.change(screen.getByPlaceholderText("Phone"), {
       target: { value: 12345 },
     });
     //entering password
     fireEvent.change(screen.getByPlaceholderText("Password"), {
-      target: { value: "qwertY7," },
+      target: { value: "Qw!7asdf" },
     });
     //entering password confirmation
     fireEvent.change(screen.getByPlaceholderText("Confirm Password"), {
-      target: { value: "qwertY7," },
+      target: { value: "Qw!7asdf" },
     });
     //entering state / province / county
     fireEvent.change(screen.getByPlaceholderText(/state/i), {
@@ -244,6 +235,8 @@ describe("Testing SignUp component", () => {
     userEvent.selectOptions(screen.getByTestId("country"), "United Kingdom");
     //clicking sign up button
     fireEvent.click(screen.getByRole("button", { name: /sign up/i }));
+    //wait for the error message to appear
+    await waitFor(() => screen.getByText("Error: Server error"));
     //assertions
     expect(screen.getByText("Error: Server error")).toBeVisible();
   });

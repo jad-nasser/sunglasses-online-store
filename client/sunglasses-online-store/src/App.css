@@ -8,8 +8,23 @@
   max-width: 30rem;
   border: 1px solid gainsboro;
 }
+.container-2cols-form-width {
+  max-width: 40rem;
+  border: 1px solid gainsboro;
+}
 @media (max-width: 600px) {
   .container-form-width {
     border: 0;
   }
+}
+@media (max-width: 768px) {
+  .container-2cols-form-width {
+    border: 0;
+  }
+}
+.input-width {
+  width: 260px;
+}
+.phone-code-input-width {
+  width: 88px !important;
 }
