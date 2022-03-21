@@ -79,6 +79,7 @@ const SignUp = () => {
         if (res.status === 200) {
           successAlert.current.textContent = "Account successfully created";
           successAlert.current.classList.remove("d-none");
+          await new Promise((r) => setTimeout(r, 3000));
           navigate("/sign_in");
         }
       } catch (err) {

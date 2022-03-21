@@ -1,5 +1,5 @@
 import "./App.css";
-import SignUp from "./components/sign-up/SignUp";
+import EditName from "./components/edit-name/EditName";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<SignUp />} />
+          <Route path="/" element={<EditName />} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -15,12 +15,6 @@ const server = setupServer(
     (req, res, ctx) => {
       return res(ctx.status(200));
     }
-  ),
-  rest.get(
-    process.env.REACT_APP_BASE_URL + "user/check_email",
-    (req, res, ctx) => {
-      return res(ctx.status(200), ctx.json({ check_email: false }));
-    }
   )
 );
 //---------------------------------------------------------------------------------------
