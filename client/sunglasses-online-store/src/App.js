@@ -1,5 +1,5 @@
 import "./App.css";
-import EditEmail from "./components/edit-email/EditEmail";
+import VerifyEmailForTestingOnly from "./components/verify-email/VerifyEmailForTestingOnly";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<EditEmail />} />
+          <Route path="/" element={<VerifyEmailForTestingOnly />} />
         </Routes>
       </BrowserRouter>
     </div>
