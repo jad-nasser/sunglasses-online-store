@@ -1,5 +1,5 @@
 import "./App.css";
-import EditName from "./components/edit-name/EditName";
+import AccountInfo from "./components/account-info/AccountInfo";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<EditName />} />
+          <Route path="/" element={<AccountInfo />} />
         </Routes>
       </BrowserRouter>
     </div>
