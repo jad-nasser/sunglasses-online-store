@@ -1,5 +1,5 @@
 import "./App.css";
-import AccountInfo from "./components/account-info/AccountInfo";
+import EditEmail from "./components/edit-email/EditEmail";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<AccountInfo />} />
+          <Route path="/" element={<EditEmail />} />
         </Routes>
       </BrowserRouter>
     </div>
