@@ -1,5 +1,5 @@
 import "./App.css";
-import VerifyPhoneForTestingOnly from "./components/verify-phone/VerifyPhoneForTestingOnly";
+import EditPhone from "./components/edit-phone/EditPhone";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<VerifyPhoneForTestingOnly />} />
+          <Route path="/" element={<EditPhone />} />
         </Routes>
       </BrowserRouter>
     </div>
