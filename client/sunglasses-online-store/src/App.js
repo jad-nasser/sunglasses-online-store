@@ -1,5 +1,5 @@
 import "./App.css";
-import EditPassword from "./components/edit-password/EditPassword";
+import EditOrderDestination from "./components/edit-order-destination/EditOrderDestination";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<EditPassword />} />
+          <Route path="/" element={<EditOrderDestination />} />
         </Routes>
       </BrowserRouter>
     </div>
