@@ -1,5 +1,5 @@
 import "./App.css";
-import EditOrderDestination from "./components/edit-order-destination/EditOrderDestination";
+import DeactivateAccount from "./components/deactivate-account/DeactivateAccount";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<EditOrderDestination />} />
+          <Route path="/" element={<DeactivateAccount />} />
         </Routes>
       </BrowserRouter>
     </div>
