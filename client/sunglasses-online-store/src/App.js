@@ -1,5 +1,5 @@
 import "./App.css";
-import DeactivateAccount from "./components/deactivate-account/DeactivateAccount";
+import AccountSettings from "./components/account-settings/AccountSettings";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<DeactivateAccount />} />
+          <Route path="/" element={<AccountSettings />} />
         </Routes>
       </BrowserRouter>
     </div>
