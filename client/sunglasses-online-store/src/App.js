@@ -1,5 +1,5 @@
 import "./App.css";
-import CustomerOrder from "./components/customer-order/CustomerOrder";
+import MyOrders from "./components/my-orders/MyOrders";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -21,7 +21,7 @@ function App() {
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<CustomerOrder order={order} />} />
+          <Route path="/" element={<MyOrders />} />
         </Routes>
       </BrowserRouter>
     </div>
