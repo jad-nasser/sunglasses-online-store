@@ -32,7 +32,7 @@ afterEach(() => {
 //---------------------------------------------------------------------------------------
 
 describe("Testing CartItem component", () => {
-  test("Testing the component when clicking the x button, the component should be removed from screen and local storage", () => {
+  test("Testing the component when clicking the x button, the component should be removed from the local storage", () => {
     //saving an item in the local storage
     localStorage.setItem("items", JSON.stringify(items));
     //rendering the component
@@ -44,8 +44,8 @@ describe("Testing CartItem component", () => {
     //clicking the x button
     fireEvent.click(screen.getByTestId("delete-cart-item"));
     //assertions
-    expect(screen.queryByText("Ray-Ban Rounded")).not.toBeInTheDocument();
-    expect(!localStorage.getItem("items")["1234"]).toBe(true);
+    let lsItems = JSON.parse(localStorage.getItem("items"));
+    expect(!lsItems["1234"]).toBe(true);
   });
   //----------------------------------------------------------------------------------------------------
 

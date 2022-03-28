@@ -1,27 +1,29 @@
 import "./App.css";
-import MyOrders from "./components/my-orders/MyOrders";
+import CartItem from "./components/cart-item/CartItem";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
-  let order = {
-    item_name: "Ray-Ban Rounded",
-    item_size: "50 150-50",
-    item_color: "Gold metal, black glasses",
-    item_price: 230,
-    quantity: 2,
-    date_time: new Date(Date.now()),
-    item_brand: "Ray-Ban",
-    status: "Delivered",
-    item_id: "1234",
-    item_info: {
-      images: ["blabla.jpg"],
-    },
+  let cartItem = {
+    name: "Ray-Ban Rounded",
+    size: "50 150-50",
+    color: "Gold metal, black glasses",
+    price: 230,
+    ordered_quantity: 2,
+    brand: "Ray-Ban",
+    _id: "1234",
+    images: ["blabla.jpg"],
   };
+  let ls = {};
+  ls[cartItem._id] = {
+    id: cartItem.id,
+    quantity: cartItem.quantity,
+  };
+  localStorage.setItem("items", JSON.stringify(ls));
   return (
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<MyOrders />} />
+          <Route path="/" element={<CartItem item={cartItem} />} />
         </Routes>
       </BrowserRouter>
     </div>
