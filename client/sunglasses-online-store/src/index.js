@@ -4,10 +4,16 @@ import "./scss/custom.css";
 import "../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+
+const stripe = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Elements stripe={stripe}>
+      <App />
+    </Elements>
   </React.StrictMode>,
   document.getElementById("root")
 );
