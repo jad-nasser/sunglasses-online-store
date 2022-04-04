@@ -274,12 +274,12 @@ async function get_user(req, res) {
 //this method is used to check if the current email is already exists
 async function check_email(req, res) {
   //checking if email field is not exist
-  if (!req.body.email) return res.status(404).send("Write an email address");
+  if (!req.query.email) return res.status(404).send("Write an email address");
   //getting the user that has that email from the database
   let user_info = {};
   try {
     user_info = await user_database_controller.find_user({
-      email: req.body.email,
+      email: req.query.email,
     });
   } catch (err) {
     return res.status(500).send(err);
@@ -295,7 +295,7 @@ async function check_email(req, res) {
 //the user can only check his/her password
 async function check_password(req, res) {
   //checking if password field is not exist
-  if (!req.body.password) return res.status(404).send("Write your password");
+  if (!req.query.password) return res.status(404).send("Write your password");
   //getting the logged in user from the database
   let user_info = {};
   try {
@@ -306,7 +306,7 @@ async function check_password(req, res) {
     return res.status(500).send(err);
   }
   //checking if the entered password is not correct
-  if (req.body.password !== user_info.password)
+  if (req.query.password !== user_info.password)
     return res.json({ check_password: false });
   //returning true because the entered password is correct
   return res.json({ check_password: true });

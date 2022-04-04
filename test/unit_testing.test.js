@@ -780,7 +780,7 @@ describe("Tesing user controller", function () {
       //creating request and response
       let res = Object.assign({}, response);
       let req = {
-        body: {},
+        query: {},
       };
       //calling the tested method
       await user_controller.check_email(req, res);
@@ -794,7 +794,7 @@ describe("Tesing user controller", function () {
       //creating request and response
       let res = Object.assign({}, response);
       let req = {
-        body: {
+        query: {
           email: "testtest@test.com",
         },
       };
@@ -818,7 +818,7 @@ describe("Tesing user controller", function () {
       //creating request and response
       let res = Object.assign({}, response);
       let req = {
-        body: {
+        query: {
           email: "testtest@test.com",
         },
       };
@@ -853,7 +853,7 @@ describe("Tesing user controller", function () {
       //creating request and response
       let res = Object.assign({}, response);
       let req = {
-        body: {},
+        query: {},
         user: {
           user_id: "1234",
           user_type: "customer",
@@ -871,7 +871,7 @@ describe("Tesing user controller", function () {
       //creating request and response
       let res = Object.assign({}, response);
       let req = {
-        body: {
+        query: {
           password: "qwertY7,",
         },
         user: {
@@ -907,7 +907,7 @@ describe("Tesing user controller", function () {
       //creating request and response
       let res = Object.assign({}, response);
       let req = {
-        body: {
+        query: {
           password: "qwertY7,",
         },
         user: {
@@ -1218,7 +1218,7 @@ describe("Testing item controller", function () {
     it("Should return a 200 response with some items", async function () {
       //create request and response
       let res = Object.assign({}, response);
-      let req = { body: {} };
+      let req = { query: {} };
       //stubbing item_database_controller.find_items()
       let items = [];
       items[0] = { name: "item0" };
@@ -1429,7 +1429,7 @@ describe("Testing order controller", function () {
       //create request and response
       let res = Object.assign({}, response);
       let req = {
-        body: {
+        query: {
           shipment_id: "1234",
         },
       };
@@ -1855,225 +1855,6 @@ describe("Testing order controller", function () {
   });
   //---------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
-
-  //Testing check_orders_validity()
-  describe("Testing check_orders_validity()", function () {
-    //Testing check_orders_validity() by sending empty body request
-    //Should return a 404 response with message "Payment intent ID not found in the request"
-    it('Should return a 404 response with message "Payment intent ID not found in the request"', async function () {
-      //creating request and response
-      let req = { body: {} };
-      let res = Object.assign({}, response);
-      //calling the tested method
-      await order_controller.check_orders_validity(req, res);
-      //assertions
-      expect(res.status_number).to.be.equal(404);
-      expect(res.text).to.be.equal(
-        "Payment intent ID not found in the request"
-      );
-    });
-    //---------------------------------------------------------------------------------------------
-
-    //Testing check_orders_validity() by sending a request with a payment_intent_id but we will assume
-    //that this payment intent is not exist
-    //Should return a 403 response with message "Payment intent not found"
-    it('Should return a 403 response with message "Payment intent not found"', async function () {
-      //creating request and response
-      let req = {
-        body: {
-          payment_intent_id: "123",
-        },
-      };
-      let res = Object.assign({}, response);
-      //stubbing the stripe method to make it not find any payment intent
-      let payment_intent_retrieve_stub = sinon.stub();
-      let controller = proxyquire("../controllers/order_controller", {
-        "../stripe": {
-          paymentIntents: {
-            retrieve: payment_intent_retrieve_stub,
-          },
-        },
-      });
-      //calling the tested method
-      await controller.check_orders_validity(req, res);
-      //assertions
-      expect(payment_intent_retrieve_stub.calledOnce).to.be.true;
-      expect(res.status_number).to.be.equal(403);
-      expect(res.text).to.be.equal("Payment intent not found");
-    });
-    //---------------------------------------------------------------------------------------------
-
-    //Testing check_orders_validity() by sending a request with a payment_intent_id and we will assume
-    //that this payment intent exists but its canceled
-    //Should return a 403 response with message "This payment intent is not valid because its either succeeded or canceled"
-    it('Should return a 403 response with message "This payment intent is not valid because its either succeeded or canceled"', async function () {
-      //creating request and response
-      let req = {
-        body: {
-          payment_intent_id: "123",
-        },
-      };
-      let res = Object.assign({}, response);
-      //stubbing the stripe method to make find a canceled payment intent
-      let payment_intent_retrieve_stub = sinon.stub().returns({
-        id: "123",
-        client_secret: "1234",
-        status: "canceled",
-      });
-      let controller = proxyquire("../controllers/order_controller", {
-        "../stripe": {
-          paymentIntents: {
-            retrieve: payment_intent_retrieve_stub,
-          },
-        },
-      });
-      //calling the tested method
-      await controller.check_orders_validity(req, res);
-      //assertions
-      expect(payment_intent_retrieve_stub.calledOnce).to.be.true;
-      expect(res.status_number).to.be.equal(403);
-      expect(res.text).to.be.equal(
-        "This payment intent is not valid because its either succeeded or canceled"
-      );
-    });
-    //---------------------------------------------------------------------------------------------
-
-    //Testing check_orders_validity() by sending a request with a payment_intent_id and we will assume
-    //that this payment intent exists and valid but we will also assume that the ordered quantities are
-    //more than the available quantities
-    //Should return a 403 response with message "Some order quantity is not available at our store"
-    it('Should return a 403 response with message "Some order quantity is not available at our store"', async function () {
-      //creating request and response
-      let req = {
-        body: {
-          payment_intent_id: "123",
-        },
-      };
-      let res = Object.assign({}, response);
-      //stubbing the stripe method to make it find available payment intent
-      //also stubbing the database find_orders and find_item methods to return orders and items so that
-      //the ordered quantites is more than the available items
-      //also stubbing the stripe method payment intent cancel to do nothing because in this case the code
-      //cancels the payment intent
-      let payment_intent_retrieve_stub = sinon.stub().returns({
-        id: "123",
-        client_secret: "1234",
-        status: "valid",
-      });
-      let payment_intent_cancel_stub = sinon.stub();
-      let find_orders_stub = sinon.stub().callsFake(function () {
-        let orders = [];
-        orders[0] = {
-          _id: "21",
-          item_id: "31",
-          quantity: 5,
-        };
-        orders[1] = {
-          _id: "22",
-          item_id: "32",
-          quantity: 5,
-        };
-        return orders;
-      });
-      let find_item_stub = sinon.stub().returns({
-        _id: "31",
-        quantity: 1,
-      });
-      let controller = proxyquire("../controllers/order_controller", {
-        "../stripe": {
-          paymentIntents: {
-            retrieve: payment_intent_retrieve_stub,
-            cancel: payment_intent_cancel_stub,
-          },
-        },
-        "../database_controllers/order_database_controller": {
-          find_orders: find_orders_stub,
-        },
-        "../database_controllers/item_database_controller": {
-          find_item: find_item_stub,
-        },
-      });
-      //calling the tested method
-      await controller.check_orders_validity(req, res);
-      //assertions
-      expect(payment_intent_retrieve_stub.calledOnce).to.be.true;
-      expect(payment_intent_cancel_stub.calledOnce).to.be.true;
-      expect(find_orders_stub.calledOnce).to.be.true;
-      expect(find_item_stub.calledOnce).to.be.true;
-      expect(res.status_number).to.be.equal(403);
-      expect(res.text).to.be.equal(
-        "Some order quantity is not available at our store"
-      );
-    });
-    //---------------------------------------------------------------------------------------------
-
-    //Testing check_orders_validity() by sending a request with a payment_intent_id and we will assume
-    //that this payment intent exists and valid and the ordered quantities are less than
-    //the available quantities
-    //Should return a 200 response with orders validation sign
-    it("Should return a 200 response with orders validation sign", async function () {
-      //creating request and response
-      let req = {
-        body: {
-          payment_intent_id: "123",
-        },
-      };
-      let res = Object.assign({}, response);
-      //stubbing the stripe method to make it find available payment intent and stubbing the cancel method
-      //also stubbing the database find_orders and find_item methods to return orders and items so that
-      //the ordered quantites is less than the available items
-      let payment_intent_retrieve_stub = sinon.stub().returns({
-        id: "123",
-        client_secret: "1234",
-        status: "valid",
-      });
-      let payment_intent_cancel_stub = sinon.stub();
-      let find_orders_stub = sinon.stub().callsFake(function () {
-        let orders = [];
-        orders[0] = {
-          _id: "21",
-          item_id: "31",
-          quantity: 1,
-        };
-        orders[1] = {
-          _id: "22",
-          item_id: "32",
-          quantity: 1,
-        };
-        return orders;
-      });
-      let find_item_stub = sinon.stub().returns({
-        _id: "31",
-        quantity: 5,
-      });
-      let controller = proxyquire("../controllers/order_controller", {
-        "../stripe": {
-          paymentIntents: {
-            retrieve: payment_intent_retrieve_stub,
-            cancel: payment_intent_cancel_stub,
-          },
-        },
-        "../database_controllers/order_database_controller": {
-          find_orders: find_orders_stub,
-        },
-        "../database_controllers/item_database_controller": {
-          find_item: find_item_stub,
-        },
-      });
-      //calling the tested method
-      await controller.check_orders_validity(req, res);
-      //assertions
-      expect(payment_intent_retrieve_stub.calledOnce).to.be.true;
-      expect(payment_intent_cancel_stub.called).to.be.false;
-      expect(find_orders_stub.calledOnce).to.be.true;
-      expect(find_item_stub.calledTwice).to.be.true;
-      expect(res.status_number).to.be.equal(200);
-      expect(res.text.are_orders_valid).to.be.true;
-    });
-    //---------------------------------------------------------------------------------------------
-  });
-  //----------------------------------------------------------------------------------------------
-  //----------------------------------------------------------------------------------------------
 
   //Testing webhook()
   describe("Testing webhook()", function () {

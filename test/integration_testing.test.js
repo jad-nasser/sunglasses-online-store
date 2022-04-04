@@ -317,7 +317,7 @@ describe("Testing user router", function () {
     //sending check_email request
     await request(app)
       .get("/user/check_email")
-      .send(email)
+      .query(email)
       .expect(function (res) {
         res.text = JSON.parse(res.text);
         final_res = res;
@@ -348,7 +348,7 @@ describe("Testing user router", function () {
     await request(app)
       .get("/user/check_password")
       .set("Cookie", ["token=" + token])
-      .send(password)
+      .query(password)
       .expect(function (res) {
         res.text = JSON.parse(res.text);
         final_res = res;
@@ -473,7 +473,7 @@ describe("Testing item router", function () {
           request(app)
             .get("/item/get_items")
             //we searching for the item that has name 'Rounded 2' we only need to pass 2 because it has regex
-            .send({ name: "2" })
+            .query({ name: "2" })
             .expect(function (res) {
               res.text = JSON.parse(res.text);
               expect(Array.isArray(res.text)).to.be.true;
@@ -779,7 +779,7 @@ describe("Testing order router", function () {
     await request(app)
       .get("/order/get_orders")
       .set("Cookie", ["token=" + token])
-      .send({ item_name: "2" })
+      .query({ item_name: "2" })
       .expect(function (res) {
         res.text = JSON.parse(res.text);
         final_response = res;
@@ -838,127 +838,6 @@ describe("Testing order router", function () {
     //assertions
     expect(final_response.statusCode).to.be.equal(200);
     expect(final_response.text).to.be.contain("success");
-  });
-  //--------------------------------------------------------------------------------
-
-  //Testing /order/check_orders_validity by checking orders that its quantities are not available it should
-  //return a 403 response with a not available message
-  it("Testing /order/check_orders_validity by checking orders that its quantities are not available it should return a 403 response with a not available message", async function () {
-    //creating the customer
-    let user = new User(verified_test_user1);
-    await user.save();
-    //creating items
-    let items = [];
-    items[0] = test_item1;
-    items[1] = test_item2;
-    await Item.insertMany(items);
-    //getting the items from the database
-    const found_items = await Item.find({});
-    //creating varibles for create_orders request
-    let req_items = [];
-    req_items[0] = {
-      id: found_items[0]._id,
-      quantity: 3,
-    };
-    req_items[1] = {
-      id: found_items[1]._id,
-      quantity: 3,
-    };
-    //creating final response variable
-    let final_response = null;
-    //creating user token variable
-    let token = null;
-    //creating payment_intent_id variable that will returned after create_orders request
-    let payment_intent_id = null;
-    //sending login request to get a token
-    await request(app)
-      .post("/user/user_login")
-      .send(email_password)
-      .expect(function (res) {
-        res.text = JSON.parse(res.text);
-        token = res.text.token;
-      });
-    //sending the create_orders request to create the orders and to get the payment_intent_id
-    await request(app)
-      .post("/order/create_orders")
-      .set("Cookie", ["token=" + token])
-      .send({ items: req_items })
-      .expect(function (res) {
-        res.text = JSON.parse(res.text);
-        payment_intent_id = "pi_" + res.text.client_secret.split("_")[1];
-      });
-    //update the items by reducing the quantities so that the check_orders_validity will fail
-    await Item.updateMany({}, { $inc: { quantity: -3 } });
-    //sending the check_orders_validity request
-    await request(app)
-      .get("/order/check_orders_validity")
-      .send({ payment_intent_id: payment_intent_id })
-      .expect(function (res) {
-        final_response = res;
-      });
-    //assertions
-    expect(final_response.statusCode).to.be.equal(403);
-    expect(final_response.text).to.be.contain("not available");
-  });
-  //--------------------------------------------------------------------------------
-
-  //Testing /order/check_orders_validity by checking orders that its quantities are available it should
-  //return a 200 response with a validation sign
-  it("Testing /order/check_orders_validity by checking orders that its quantities are available it should return a 200 response with a validation sign", async function () {
-    //creating the customer
-    let user = new User(verified_test_user1);
-    await user.save();
-    //creating items
-    let items = [];
-    items[0] = test_item1;
-    items[1] = test_item2;
-    await Item.insertMany(items);
-    //getting the items from the database
-    const found_items = await Item.find({});
-    //creating varibles for create_orders request
-    let req_items = [];
-    req_items[0] = {
-      id: found_items[0]._id,
-      quantity: 3,
-    };
-    req_items[1] = {
-      id: found_items[1]._id,
-      quantity: 3,
-    };
-    //creating final response variable
-    let final_response = null;
-    //creating user token variable
-    let token = null;
-    //creating payment_intent_id variable that will returned after create_orders request
-    let payment_intent_id = null;
-    //sending login request to get a token
-    await request(app)
-      .post("/user/user_login")
-      .send(email_password)
-      .expect(function (res) {
-        res.text = JSON.parse(res.text);
-        token = res.text.token;
-      });
-    //sending the create_orders request to create the orders and to get the payment_intent_id
-    await request(app)
-      .post("/order/create_orders")
-      .set("Cookie", ["token=" + token])
-      .send({ items: req_items })
-      .expect(function (res) {
-        res.text = JSON.parse(res.text);
-        payment_intent_id = "pi_" + res.text.client_secret.split("_")[1];
-      });
-    //sending the check_orders_validity request
-    await request(app)
-      .get("/order/check_orders_validity")
-      .send({ payment_intent_id: payment_intent_id })
-      .expect(function (res) {
-        res.text = JSON.parse(res.text);
-        final_response = res;
-      });
-    //assertions
-    expect(final_response.statusCode).to.be.equal(200);
-    expect(final_response.text.are_orders_valid).to.be.true;
   });
   //--------------------------------------------------------------------------------
 

@@ -3,9 +3,14 @@ const CartItem = (props) => {
   const mainDiv = useRef(null);
   const removeItem = () => {
     let items = JSON.parse(localStorage.getItem("items"));
-    delete items[props.item._id];
-    localStorage.setItem("items", JSON.stringify(items));
+    let newItems = [];
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].id !== props.item._id) newItems.push(items[i]);
+    }
+    localStorage.setItem("items", JSON.stringify(newItems));
     mainDiv.current.classList.add("d-none");
+    props.checkLocalStorage();
+    props.substractPrice(props.item.price, props.item.ordered_quantity);
   };
   return (
     <div

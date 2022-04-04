@@ -38,7 +38,11 @@ describe("Testing CartItem component", () => {
     //rendering the component
     render(
       <BrowserRouter>
-        <CartItem item={item} />
+        <CartItem
+          item={item}
+          checkLocalStorage={() => {}}
+          substractPrice={() => {}}
+        />
       </BrowserRouter>
     );
     //clicking the x button
@@ -55,7 +59,11 @@ describe("Testing CartItem component", () => {
     //rendering the component
     render(
       <BrowserRouter>
-        <CartItem item={item} />
+        <CartItem
+          item={item}
+          checkLocalStorage={() => {}}
+          substractPrice={() => {}}
+        />
       </BrowserRouter>
     );
     //assertions

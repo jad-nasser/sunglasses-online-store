@@ -59,12 +59,15 @@ async function get_items(req, res) {
   //check the fields that are provided in the request to find items and gathering them in one object called
   //item_search_info.
   var item_search_info = {};
-  if (req.body.name) item_search_info.name = new RegExp(req.body.name, "i");
-  if (req.body.brand) item_search_info.brand = new RegExp(req.body.brand, "i");
-  if (req.body.color) item_search_info.color = new RegExp(req.body.color, "i");
-  if (req.body.size) item_search_info.size = new RegExp(req.body.size, "i");
-  if (req.body.price) item_search_info.price = req.body.price;
-  if (req.body.quantity) item_search_info.quantity = req.body.quantity;
+  if (req.query.name) item_search_info.name = new RegExp(req.query.name, "i");
+  if (req.query.brand)
+    item_search_info.brand = new RegExp(req.query.brand, "i");
+  if (req.query.color)
+    item_search_info.color = new RegExp(req.query.color, "i");
+  if (req.query.size) item_search_info.size = new RegExp(req.query.size, "i");
+  if (req.query.price) item_search_info.price = req.query.price;
+  if (req.query.quantity) item_search_info.quantity = req.query.quantity;
+  if (req.query.id) item_search_info._id = req.query.id;
 
   //using the item_search_info search data to find the items in the database
   let found_items = null;

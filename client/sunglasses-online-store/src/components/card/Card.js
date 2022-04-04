@@ -33,6 +33,7 @@ const Card = () => {
         error.current.textContent = "Error: " + stripeError.message;
         error.current.classList.remove("d-none");
       } else if (paymentIntent.status === "succeeded") {
+        localStorage.removeItem("items");
         success.current.textContent = "Payment succeeded";
         success.current.classList.remove("d-none");
       } else {

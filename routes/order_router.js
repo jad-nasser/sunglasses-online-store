@@ -48,12 +48,6 @@ router.post(
 );
 //-------------------------------------------------------------------------------------
 
-//this method will check if the orders quantities are still available at the store
-//this method will be triggered before the purchase is done
-//if the orders are not valid its payment_intent will be cancelled
-router.get("/check_orders_validity", order_controller.check_orders_validity);
-//--------------------------------------------------------------------------------------
-
 //this method to handle purchase events
 //this method will procced the order if a payment is successfully recieved
 //this method also will delete the orders of the canceled payment intents

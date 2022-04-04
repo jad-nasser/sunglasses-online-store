@@ -24,19 +24,19 @@ async function get_customer_orders(req, res) {
 async function get_orders(req, res) {
   //gathering the search information
   let search_info = {};
-  if (req.body.shipment_id) search_info.shipment_id = req.body.shipment_id;
-  if (req.body.quantity) search_info.quantity = req.body.quantity;
-  if (req.body.status) search_info.status = new RegExp(req.body.status, "i");
-  if (req.body.date_time)
-    search_info.date_time = new RegExp(req.body.date_time, "i");
-  if (req.body.item_name)
-    search_info.item_name = new RegExp(req.body.item_name, "i");
-  if (req.body.item_brand)
-    search_info.item_brand = new RegExp(req.body.item_brand, "i");
-  if (req.body.item_color)
-    search_info.item_color = new RegExp(req.body.item_color, "i");
-  if (req.body.item_size)
-    search_info.item_size = new RegExp(req.body.item_size, "i");
+  if (req.query.shipment_id) search_info.shipment_id = req.query.shipment_id;
+  if (req.query.quantity) search_info.quantity = req.query.quantity;
+  if (req.query.status) search_info.status = new RegExp(req.query.status, "i");
+  if (req.query.date_time)
+    search_info.date_time = new RegExp(req.query.date_time, "i");
+  if (req.query.item_name)
+    search_info.item_name = new RegExp(req.query.item_name, "i");
+  if (req.query.item_brand)
+    search_info.item_brand = new RegExp(req.query.item_brand, "i");
+  if (req.query.item_color)
+    search_info.item_color = new RegExp(req.query.item_color, "i");
+  if (req.query.item_size)
+    search_info.item_size = new RegExp(req.query.item_size, "i");
 
   //getting the orders from the database
   try {
@@ -214,66 +214,6 @@ async function create_orders(req, res) {
 }
 //-------------------------------------------------------------------------------------
 
-//this method will check if the orders quantities are still available at the store
-//this method will be triggered before the purchase is done
-//if the orders are not valid its payment_intent will be cancelled
-async function check_orders_validity(req, res) {
-  //checking the existence of the client_secret
-  if (!req.body.payment_intent_id)
-    return res.status(404).send("Payment intent ID not found in the request");
-
-  //retrieving the payment intent
-  let paymentIntent;
-  try {
-    paymentIntent = await stripe.paymentIntents.retrieve(
-      req.body.payment_intent_id
-    );
-  } catch (err) {
-    return res.json(err);
-  }
-
-  //check if the payment intent is exist
-  if (!paymentIntent) return res.status(403).send("Payment intent not found");
-
-  //checking if the payment intent is still valid or alredy completed
-  if (
-    paymentIntent.status === "canceled" ||
-    paymentIntent.status === "succeeded"
-  )
-    return res
-      .status(403)
-      .send(
-        "This payment intent is not valid because its either succeeded or canceled"
-      );
-
-  //checking if the quantities of the orders of this payment intent are still available
-  try {
-    //getting the orders of this payment intent
-    const orders = await order_database_controller.find_orders({
-      payment_intent_id: req.body.payment_intent_id,
-    });
-    //checking each order if its quantity is still available
-    for (let i = 0; i < orders.length; i++) {
-      const item = await item_database_controller.find_item({
-        _id: orders[i].item_id,
-      });
-      if (item.quantity < orders[i].quantity) {
-        //cancelling the payment intent
-        await stripe.paymentIntents.cancel(req.body.payment_intent_id);
-        return res
-          .status(403)
-          .send("Some order quantity is not available at our store");
-      }
-    }
-  } catch (err) {
-    return res.json(err);
-  }
-
-  //if every thing is alright return true
-  return res.send({ are_orders_valid: true });
-}
-//--------------------------------------------------------------------------------------
-
 //this method to handle purchase events
 //this method will procced the order if a payment is successfully recieved
 //this method also will delete the orders of the canceled payment intents
@@ -334,7 +274,6 @@ module.exports = {
   get_customer_orders,
   get_orders,
   update_orders,
-  check_orders_validity,
   create_orders,
   webhook,
 };
