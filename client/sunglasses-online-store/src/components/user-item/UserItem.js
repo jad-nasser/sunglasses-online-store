@@ -20,8 +20,13 @@ const UserItem = (props) => {
   let imgSrc = process.env.REACT_APP_BASE_URL + props.items[0].images[0];
   //return the UserItem component
   return (
-    <Link to="/view_item" role="button" className="btn p-0 text-center w-100">
-      <img src={imgSrc} alt={props.items[0].name} className="rounded w-100" />
+    <Link to="/view_item" role="button" className="btn p-0 text-center m-4">
+      <img
+        src={imgSrc}
+        alt={props.items[0].name}
+        className="rounded border"
+        style={{ maxWidth: "200px" }}
+      />
       <p className="mb-0">{props.items[0].name}</p>
       <p>{price}</p>
     </Link>

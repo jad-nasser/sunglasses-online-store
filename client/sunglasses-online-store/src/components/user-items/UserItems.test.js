@@ -1,5 +1,5 @@
 //importing modules
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import UserItems from "./UserItems";
 import { BrowserRouter } from "react-router-dom";
 import { rest } from "msw";
@@ -44,9 +44,12 @@ items[4] = {
 
 //setting up the mock server
 const server = setupServer(
-  rest.get("/item/get_items", (req, res, ctx) => {
-    return res(ctx.json(items));
-  })
+  rest.get(
+    process.env.REACT_APP_BASE_URL + "item/get_items",
+    (req, res, ctx) => {
+      return res(ctx.json(items));
+    }
+  )
 );
 //----------------------------------------------------------------------
 
@@ -56,13 +59,15 @@ afterAll(() => server.close());
 //------------------------------------------------------------------
 
 describe("Testing UserItems component", () => {
-  test("it should render 3 UserItem component item1, item2, item3 and item1 should not be rendered twice and item4 should not be rendered because it has zero quantity", () => {
+  test("it should render 3 UserItem component item1, item2, item3 and item1 should not be rendered twice and item4 should not be rendered because it has zero quantity", async () => {
     //rendering the component
     render(
       <BrowserRouter>
-        <UserItems requestBody={{}} />
+        <UserItems requestQuery={{}} />
       </BrowserRouter>
     );
+    //wait for the items to appear
+    await waitFor(() => screen.getByText("item3"));
     //assertions
     expect(screen.getAllByText(/item/).length).toBe(3);
     expect(screen.getByText("item1")).toBeVisible();
