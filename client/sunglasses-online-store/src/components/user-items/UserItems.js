@@ -43,7 +43,9 @@ function UserItems(props) {
       <div>
         {items &&
           items.length > 0 &&
-          items.map((group, index) => <UserItem key={index} items={group} />)}
+          items.map((group, index) => (
+            <UserItem key={index} items={group} loggedIn={props.loggedIn} />
+          ))}
       </div>
       <div className="text-center">
         {(!items || items.length === 0) && (

@@ -7,7 +7,10 @@ function App() {
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<UserItems requestQuery={{}} />} />
+          <Route
+            path="/"
+            element={<UserItems requestQuery={{}} loggedIn={true} />}
+          />
         </Routes>
       </BrowserRouter>
     </div>

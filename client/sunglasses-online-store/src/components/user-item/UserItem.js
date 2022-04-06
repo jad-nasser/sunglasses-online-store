@@ -20,7 +20,15 @@ const UserItem = (props) => {
   let imgSrc = process.env.REACT_APP_BASE_URL + props.items[0].images[0];
   //return the UserItem component
   return (
-    <Link to="/view_item" role="button" className="btn p-0 text-center m-4">
+    <Link
+      to={
+        props.loggedIn
+          ? "/user/view_item?name=" + props.items[0].name
+          : "/view_item?name=" + props.items[0].name
+      }
+      role="button"
+      className="btn p-0 text-center m-4"
+    >
       <img
         src={imgSrc}
         alt={props.items[0].name}
