@@ -1,5 +1,5 @@
 import "./App.css";
-import ItemUpdator from "./components/item-updator/ItemUpdator";
+import Items from "./components/items/Items";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<ItemUpdator requestQuery={{}} />} />
+          <Route path="/" element={<Items requestQuery={{}} />} />
         </Routes>
       </BrowserRouter>
     </div>

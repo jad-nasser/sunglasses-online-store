@@ -1,5 +1,5 @@
 //importing modules
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import Items from "./Items";
 import { BrowserRouter } from "react-router-dom";
 import { rest } from "msw";
@@ -36,12 +36,18 @@ items[1] = {
 
 //creating a mock server
 const server = setupServer(
-  rest.patch("/item/update_items", (req, res, ctx) => {
-    return res(ctx.status(200));
-  }),
-  rest.get("/item/get_items", (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json(items));
-  })
+  rest.patch(
+    process.env.REACT_APP_BASE_URL + "item/update_items",
+    (req, res, ctx) => {
+      return res(ctx.status(200));
+    }
+  ),
+  rest.get(
+    process.env.REACT_APP_BASE_URL + "item/get_items",
+    (req, res, ctx) => {
+      return res(ctx.status(200), ctx.json(items));
+    }
+  )
 );
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
@@ -53,60 +59,43 @@ afterAll(() => server.close());
 //-------------------------------------------------------------------------------------
 
 describe("Testing Items component", () => {
-  test("Testing the component when substracting more than the available items, it should return an error message 'Not enough quantities to substract' ", () => {
+  test("Testing the component when the updates are succeeded", async () => {
     //rendering the component
     render(
       <BrowserRouter>
-        <Items requestBody={{}} />
+        <Items requestQuery={{}} />
       </BrowserRouter>
     );
-    //clicking the "Substract" radio button
-    fireEvent.click(screen.getByLabelText("Substract"));
-    //writing a value that is bigger than the available quantity
-    fireEvent.change(screen.getByPlaceholderText("Value to substract"), {
-      target: { value: "10" },
+    //Changing the quantities
+    fireEvent.change(screen.getByPlaceholderText("Change Quantity"), {
+      target: { value: 5 },
     });
     //clicking the update button
     fireEvent.click(screen.getByRole("button", { name: "Update" }));
-    //assertions
-    expect(
-      screen.getByText("Error: Not enough quantities to substract")
-    ).toBeVisible();
-  });
-  //----------------------------------------------------------------------
-
-  test("Testing the component when the updates are succeeded", () => {
-    //rendering the component
-    render(
-      <BrowserRouter>
-        <Items requestBody={{}} />
-      </BrowserRouter>
-    );
-    //clicking the "Substract" radio button
-    fireEvent.click(screen.getByLabelText("Substract"));
-    //writing a value that is smaller than the available quantity
-    fireEvent.change(screen.getByPlaceholderText("Value to substract"), {
-      target: { value: "2" },
-    });
-    //clicking the update button
-    fireEvent.click(screen.getByRole("button", { name: "Update" }));
+    //waiting for the success message to appear
+    await waitFor(() => screen.getByText("Items successfully updated"));
     //assertions
     expect(screen.getByText("Items successfully updated")).toBeVisible();
   });
   //----------------------------------------------------------------------
 
-  test("Testing the component when the server sends an error", () => {
+  test("Testing the component when the server sends an error", async () => {
     server.use(
-      rest.get("/item/get_items", (req, res, ctx) => {
-        return res(ctx.status(500, "Server error"));
-      })
+      rest.get(
+        process.env.REACT_APP_BASE_URL + "item/get_items",
+        (req, res, ctx) => {
+          return res(ctx.status(500), ctx.json("Server error"));
+        }
+      )
     );
     //rendering the component
     render(
       <BrowserRouter>
-        <Items requestBody={{}} />
+        <Items requestQuery={{}} />
       </BrowserRouter>
     );
+    //waiting for the error message to appear
+    await waitFor(() => screen.getByText("Error: Server error"));
     //assertions
     expect(screen.getByText("Error: Server error")).toBeVisible();
   });
@@ -116,7 +105,7 @@ describe("Testing Items component", () => {
     //rendering the component
     render(
       <BrowserRouter>
-        <Items requestBody={{}} />
+        <Items requestQuery={{}} />
       </BrowserRouter>
     );
     //assertions

@@ -4,7 +4,7 @@ const Item = (props) => {
     <div className="m-4 d-inline-flex">
       <div style={{ maxWidth: "200px" }} className="me-2">
         <img
-          src={props.item.images[0]}
+          src={process.env.REACT_APP_BASE_URL + props.item.images[0]}
           alt={props.item.name}
           className="rounded border mb-2"
           style={{ maxWidth: "200px" }}
@@ -12,7 +12,7 @@ const Item = (props) => {
         {props.item.images.map((image, index) => (
           <button className="btn me-2 mb-2 p-0 border" key={index}>
             <img
-              src={image}
+              src={process.env.REACT_APP_BASE_URL + image}
               alt={index}
               className="rounded"
               style={{ maxWidth: "40px" }}

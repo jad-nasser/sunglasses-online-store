@@ -80,7 +80,7 @@ const ItemUpdator = (props) => {
     }
   };
   return (
-    <div className="w-75 border mx-auto my-4">
+    <div className="w-75 border mx-auto mb-4">
       <form onSubmit={updateItems}>
         <div className="d-flex flex-wrap mt-2">
           <input
@@ -147,7 +147,7 @@ const ItemUpdator = (props) => {
             ref={updateButton}
             disabled
           >
-            Update Items
+            Update
           </button>
         </div>
       </form>
