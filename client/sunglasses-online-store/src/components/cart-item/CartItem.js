@@ -19,7 +19,7 @@ const CartItem = (props) => {
     >
       <img
         className="me-2 rounded align-self-center"
-        src={props.item.images[0]}
+        src={process.env.REACT_APP_BASE_URL + props.item.images[0]}
         alt={props.item.name}
         width="100"
         height="100"
