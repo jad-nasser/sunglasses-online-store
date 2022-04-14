@@ -1482,7 +1482,7 @@ describe("Testing order controller", function () {
       let stub1 = sinon.stub();
       let controller = proxyquire("../controllers/order_controller", {
         "../database_controllers/order_database_controller": {
-          update_orders: stub1,
+          update_orders_by_seller: stub1,
         },
       });
       //calling the tested method

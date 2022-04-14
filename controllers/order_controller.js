@@ -84,7 +84,7 @@ async function update_orders(req, res) {
 
   //updating the orders in the database
   try {
-    await order_database_controller.update_orders(search_info, {
+    await order_database_controller.update_orders_by_seller(search_info, {
       $set: update_info,
     });
     return res.send("Orders successfully updated");

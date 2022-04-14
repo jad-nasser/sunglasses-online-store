@@ -105,6 +105,17 @@ async function update_orders(search_info, update_info) {
 }
 //--------------------------------------------------------------------------------------------
 
+//this method is used when the seller updates the orders not the system
+//the main purpose of this method is to make sure that the orders that have status= 'Awaiting Payment'
+//will not updated
+async function update_orders_by_seller(search_info, update_info) {
+  await Order.updateMany(
+    { $and: [{ status: { $ne: "Awaiting Payment" } }, search_info] },
+    update_info
+  );
+}
+//------------------------------------------------------------------------------
+
 //add new orders to the database
 async function create_orders(orders) {
   await Order.insertMany(orders);
@@ -124,4 +135,5 @@ module.exports = {
   create_orders,
   delete_orders,
   find_orders_for_seller,
+  update_orders_by_seller,
 };
