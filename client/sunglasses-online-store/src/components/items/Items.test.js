@@ -101,13 +101,15 @@ describe("Testing Items component", () => {
   });
   //----------------------------------------------------------------------
 
-  test("Testing the component when there is no updates in the items updater, the update button should be disabled", () => {
+  test("Testing the component when there is no updates in the items updater, the update button should be disabled", async () => {
     //rendering the component
     render(
       <BrowserRouter>
         <Items requestQuery={{}} />
       </BrowserRouter>
     );
+    //waiting for the sunglasses to appear
+    await waitFor(() => screen.getAllByText(/Ray-Ban/));
     //assertions
     expect(screen.getByRole("button", { name: "Update" })).toBeDisabled();
   });

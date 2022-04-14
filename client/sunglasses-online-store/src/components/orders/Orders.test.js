@@ -1,5 +1,5 @@
 //importing modules
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import Orders from "./Orders";
 import { BrowserRouter } from "react-router-dom";
 import { rest } from "msw";
@@ -92,12 +92,18 @@ orders[2] = {
 
 //creating a mock server
 const server = setupServer(
-  rest.patch("/order/update_orders", (req, res, ctx) => {
-    return res(ctx.status(200));
-  }),
-  rest.get("/order/get_orders", (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json(orders));
-  })
+  rest.patch(
+    process.env.REACT_APP_BASE_URL + "order/update_orders",
+    (req, res, ctx) => {
+      return res(ctx.status(200));
+    }
+  ),
+  rest.get(
+    process.env.REACT_APP_BASE_URL + "order/get_orders",
+    (req, res, ctx) => {
+      return res(ctx.status(200), ctx.json(orders));
+    }
+  )
 );
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
@@ -109,13 +115,15 @@ afterAll(() => server.close());
 //-------------------------------------------------------------------------------------
 
 describe("Testing Orders component", () => {
-  test("It should render 2 orders, and the third order with the status= Awaiting Payment should not be rendered, and also the total price of the two rendered orders that it is 460$ should be rendered", () => {
+  test("It should render 2 orders, and the third order with the status= Awaiting Payment should not be rendered, and also the total price of the two rendered orders that it is 460$ should be rendered", async () => {
     //rendering the component
     render(
       <BrowserRouter>
-        <Orders requestBody={{}} />
+        <Orders requestQuery={{}} />
       </BrowserRouter>
     );
+    //waiting for everything to be rendered
+    await waitFor(() => screen.getAllByText(/Awaiting/));
     //assertions
     expect(screen.getAllByText(/Awaiting/).length).toBe(2);
     expect(screen.getAllByText(/Awaiting Shipment/).length).toBe(2);
@@ -123,11 +131,11 @@ describe("Testing Orders component", () => {
   });
   //----------------------------------------------------------------------
 
-  test("Testing the component when the updates are succeeded", () => {
+  test("Testing the component when the updates are succeeded", async () => {
     //rendering the component
     render(
       <BrowserRouter>
-        <Orders requestBody={{}} />
+        <Orders requestQuery={{}} />
       </BrowserRouter>
     );
     //changing "Change Status" input in Orders Editor
@@ -136,35 +144,44 @@ describe("Testing Orders component", () => {
     });
     //clicking the update button
     fireEvent.click(screen.getByRole("button", { name: "Update" }));
+    //waiting for the success text to appear
+    await waitFor(() => screen.getByText("Orders successfully updated"));
     //assertions
     expect(screen.getByText("Orders successfully updated")).toBeVisible();
   });
   //----------------------------------------------------------------------
 
-  test("Testing the component when the server sends an error", () => {
+  test("Testing the component when the server sends an error", async () => {
     server.use(
-      rest.get("/order/get_orders", (req, res, ctx) => {
-        return res(ctx.status(500, "Server error"));
-      })
+      rest.get(
+        process.env.REACT_APP_BASE_URL + "order/get_orders",
+        (req, res, ctx) => {
+          return res(ctx.status(500), ctx.json("Server error"));
+        }
+      )
     );
     //rendering the component
     render(
       <BrowserRouter>
-        <Orders requestBody={{}} />
+        <Orders requestQuery={{}} />
       </BrowserRouter>
     );
+    //waiting for the error text to appear
+    await waitFor(() => screen.getByText("Error: Server error"));
     //assertions
     expect(screen.getByText("Error: Server error")).toBeVisible();
   });
   //----------------------------------------------------------------------
 
-  test("Testing the component when there is no updates in the Orders updater, the update button should be disabled", () => {
+  test("Testing the component when there is no updates in the Orders updater, the update button should be disabled", async () => {
     //rendering the component
     render(
       <BrowserRouter>
-        <Orders requestBody={{}} />
+        <Orders requestQuery={{}} />
       </BrowserRouter>
     );
+    //waiting for all orders to appear
+    await waitFor(() => screen.getAllByText(/Awaiting/));
     //assertions
     expect(screen.getByRole("button", { name: "Update" })).toBeDisabled();
   });

@@ -16,12 +16,12 @@ const Items = (props) => {
       try {
         const res = await axios.get(
           process.env.REACT_APP_BASE_URL + "item/get_items",
-          props.requestQuery
+          { params: props.requestQuery }
         );
         setItems(res.data);
       } catch (err) {
         error.current.textContent = "Error: " + err.response.data;
-        error.current.classList.add("d-none");
+        error.current.classList.remove("d-none");
       }
     };
     getItems();

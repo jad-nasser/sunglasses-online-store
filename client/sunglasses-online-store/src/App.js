@@ -1,5 +1,5 @@
 import "./App.css";
-import OrderUpdator from "./components/order-updator/OrderUpdator";
+import Orders from "./components/orders/Orders";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -33,7 +33,7 @@ function App() {
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<OrderUpdator requestQuery={{}} />} />
+          <Route path="/" element={<Orders requestQuery={{}} />} />
         </Routes>
       </BrowserRouter>
     </div>
