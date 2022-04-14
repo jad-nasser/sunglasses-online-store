@@ -1,9 +1,9 @@
 import "./App.css";
-import Order from "./components/order/Order";
+import OrderUpdator from "./components/order-updator/OrderUpdator";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
-  let order = {
+  /*let order = {
     _id: "1234",
     item_id: "1234",
     shipment_id: "1234",
@@ -28,12 +28,12 @@ function App() {
     quantity: 2,
     total_price: 460,
     status: "Awaiting Shipment",
-  };
+  };*/
   return (
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Order order={order} />} />
+          <Route path="/" element={<OrderUpdator requestQuery={{}} />} />
         </Routes>
       </BrowserRouter>
     </div>
