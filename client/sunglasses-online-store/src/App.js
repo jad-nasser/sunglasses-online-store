@@ -1,5 +1,5 @@
 import "./App.css";
-import Orders from "./components/orders/Orders";
+import ViewItem from "./components/view-item/ViewItem";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -33,7 +33,7 @@ function App() {
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Orders requestQuery={{}} />} />
+          <Route path="/" element={<ViewItem requestQuery={{}} />} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -92,7 +92,7 @@ async function user_login(req, res) {
       process.env.SELLER_LOGIN_TOKEN_SECRET,
       { expiresIn: "24h" }
     );
-    res.cookie("token", JSON.stringify({ token: seller_token }), {
+    res.cookie("token", seller_token, {
       secure: false,
       httpOnly: true,
       expires: new Date(Date.now() + 1 * 1000 * 60 * 60 * 24),
@@ -104,7 +104,7 @@ async function user_login(req, res) {
       process.env.CUSTOMER_LOGIN_TOKEN_SECRET,
       { expiresIn: "24h" }
     );
-    res.cookie("token", JSON.stringify({ token: customer_token }), {
+    res.cookie("token", customer_token, {
       secure: false,
       httpOnly: true,
       expires: new Date(Date.now() + 1 * 1000 * 60 * 60 * 24),
