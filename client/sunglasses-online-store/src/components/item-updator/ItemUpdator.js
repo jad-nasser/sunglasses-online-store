@@ -22,9 +22,9 @@ const ItemUpdator = (props) => {
     if (name.current.value) updateInfo.name = name.current.value;
     if (color.current.value) updateInfo.color = color.current.value;
     if (size.current.value) updateInfo.size = size.current.value;
-    if (!isNaN(quantity.current.value))
-      updateInfo.quantity = quantity.current.value;
-    if (!isNaN(price.current.value)) updateInfo.price = price.current.value;
+    if (quantity.current.value)
+      updateInfo.quantity = parseInt(quantity.current.value);
+    if (price.current.value) updateInfo.price = Number(price.current.value);
     if (images.current.files.length !== 0) files = images.current.files;
     //sending the data to the database
     try {

@@ -47,7 +47,7 @@ const AddItem = (props) => {
           formData.append("brand", brand.current.value);
           formData.append("color", color.current.value);
           formData.append("size", size.current.value);
-          formData.append("price", parseInt(price.current.value));
+          formData.append("price", Number(price.current.value));
           formData.append("quantity", parseInt(quantity.current.value));
           for (let i = 0; i < images.current.files.length; i++) {
             formData.append(
