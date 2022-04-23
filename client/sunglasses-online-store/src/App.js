@@ -1,5 +1,5 @@
 import "./App.css";
-import ViewItem from "./components/view-item/ViewItem";
+import AddItem from "./components/add-item/AddItem";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -33,7 +33,7 @@ function App() {
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<ViewItem requestQuery={{}} />} />
+          <Route path="/" element={<AddItem test={false} />} />
         </Routes>
       </BrowserRouter>
     </div>

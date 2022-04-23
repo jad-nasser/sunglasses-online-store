@@ -1,5 +1,5 @@
 //importing modules
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import AddItem from "./AddItem";
 import { BrowserRouter } from "react-router-dom";
 import { rest } from "msw";
@@ -12,17 +12,29 @@ let imageFile = new File(["blabla"], "blabla.jpg", { type: "image/jpg" });
 //---------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------
 
+//mocking scrollIntoView()
+window.HTMLElement.prototype.scrollIntoView = () => {};
+//---------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+
 //creating a mock server
 const server = setupServer(
-  rest.patch("/item/create_item", (req, res, ctx) => {
-    return res(ctx.status(200));
-  })
+  rest.post(
+    process.env.REACT_APP_BASE_URL + "item/create_item",
+    (req, res, ctx) => {
+      return res(ctx.status(200));
+    }
+  )
 );
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
+beforeAll(() => {
+  server.listen();
+});
+afterEach(() => {
+  server.resetHandlers();
+});
 afterAll(() => server.close());
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
@@ -38,7 +50,7 @@ describe("Testing AddItem component", () => {
     //clicking the "Add New Item" button
     fireEvent.click(screen.getByRole("button", { name: "Add New Item" }));
     //assertions
-    expect(screen.getByText("Enter Item Name")).toBeVisible();
+    expect(screen.getByText("Enter item name")).toBeVisible();
     expect(screen.getByText("Enter item brand")).toBeVisible();
     expect(screen.getByText("Enter item color")).toBeVisible();
     expect(screen.getByText("Enter item size")).toBeVisible();
@@ -51,14 +63,17 @@ describe("Testing AddItem component", () => {
   test("Testing the component when the server sends an error", async () => {
     //make the mock server sending an error
     server.use(
-      rest.patch("/item/create_item", (req, res, ctx) => {
-        return res(ctx.status(500, "Server error"));
-      })
+      rest.post(
+        process.env.REACT_APP_BASE_URL + "item/create_item",
+        (req, res, ctx) => {
+          return res(ctx.status(500), ctx.json("Server error"));
+        }
+      )
     );
     //rendering the component
     render(
       <BrowserRouter>
-        <AddItem />
+        <AddItem test={true} />
       </BrowserRouter>
     );
     //filling all the inputs with needed info
@@ -80,11 +95,13 @@ describe("Testing AddItem component", () => {
     fireEvent.change(screen.getByPlaceholderText("Quantity"), {
       target: { value: "5" },
     });
-    await fireEvent.change(screen.getByTestId("images-uploader"), {
-      target: { files: [imageFile] },
+    fireEvent.change(screen.getByTestId("images-uploader"), {
+      target: { files: [imageFile], required: false },
     });
     //clicking the "Add New Item" button
     fireEvent.click(screen.getByRole("button", { name: "Add New Item" }));
+    //waiting for the error text
+    await waitFor(() => screen.getByText("Error: Server error"));
     //assertions
     expect(screen.getByText("Error: Server error")).toBeVisible();
   });
@@ -94,7 +111,7 @@ describe("Testing AddItem component", () => {
     //rendering the component
     render(
       <BrowserRouter>
-        <AddItem />
+        <AddItem test={true} />
       </BrowserRouter>
     );
     //filling all the inputs with needed info
@@ -116,11 +133,13 @@ describe("Testing AddItem component", () => {
     fireEvent.change(screen.getByPlaceholderText("Quantity"), {
       target: { value: "5" },
     });
-    await fireEvent.change(screen.getByTestId("images-uploader"), {
-      target: { files: [imageFile] },
+    fireEvent.change(screen.getByTestId("images-uploader"), {
+      target: { files: [imageFile], required: false },
     });
     //clicking the "Add New Item" button
     fireEvent.click(screen.getByRole("button", { name: "Add New Item" }));
+    //waiting for the success text
+    await waitFor(() => screen.getByText("Item successfully added"));
     //assertions
     expect(screen.getByText("Item successfully added")).toBeVisible();
   });
