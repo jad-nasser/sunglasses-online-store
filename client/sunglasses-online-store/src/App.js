@@ -1,5 +1,5 @@
 import "./App.css";
-import UserItems from "./components/user-items/UserItems";
+import ItemsAdvancedSearch from "./components/items-advanced-search/ItemsAdvancedSearch";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -33,7 +33,7 @@ function App() {
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<UserItems sortBy={"bla"} />} />
+          <Route path="/" element={<ItemsAdvancedSearch />} />
         </Routes>
       </BrowserRouter>
     </div>
