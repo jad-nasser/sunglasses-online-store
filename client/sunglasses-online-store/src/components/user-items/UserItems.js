@@ -6,6 +6,41 @@ function UserItems(props) {
   const [items, setItems] = useState(null);
   const error = useRef(null);
   useEffect(() => {
+    //compare functions callbacks for sort()
+    function sortByAlphabetical(a, b) {
+      let x = a[0].name.toLowerCase();
+      let y = b[0].name.toLowerCase();
+      if (x < y) return -1;
+      if (x > y) return 1;
+      return 0;
+    }
+    function sortByLowestPrice(a, b) {
+      let x = Math.min.apply(
+        Math,
+        a.map((o) => o.price)
+      );
+      let y = Math.min.apply(
+        Math,
+        b.map((o) => o.price)
+      );
+      return x - y;
+    }
+    function sortByHighestPrice(a, b) {
+      let x = Math.max.apply(
+        Math,
+        a.map((o) => o.price)
+      );
+      let y = Math.max.apply(
+        Math,
+        b.map((o) => o.price)
+      );
+      return y - x;
+    }
+    function sortByMostOrdered(a, b) {
+      let x = a.reduce((prev, cur) => prev + cur.times_ordered, 0);
+      let y = b.reduce((prev, cur) => prev + cur.times_ordered, 0);
+      return y - x;
+    }
     async function getItems() {
       //getting the items according to the request from the database
       try {
@@ -29,6 +64,15 @@ function UserItems(props) {
           if (Object.prototype.hasOwnProperty.call(foundItems, key))
             itemsArray.push(foundItems[key]);
         }
+        //sorting the items based on the request
+        if (!props.sortBy || props.sortBy === "alphabetical")
+          itemsArray.sort(sortByAlphabetical);
+        else if (props.sortBy === "lowest-price")
+          itemsArray.sort(sortByLowestPrice);
+        else if (props.sortBy === "highest-price")
+          itemsArray.sort(sortByHighestPrice);
+        else if (props.sortBy === "most-ordered")
+          itemsArray.sort(sortByMostOrdered);
         //setting the found items to the useState variable
         setItems(itemsArray);
       } catch (err) {
@@ -37,7 +81,7 @@ function UserItems(props) {
       }
     }
     getItems();
-  }, [props.requestQuery]);
+  }, [props.requestQuery, props.sortBy]);
   return (
     <div>
       <div>

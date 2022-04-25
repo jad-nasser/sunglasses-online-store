@@ -6,8 +6,29 @@ const Orders = (props) => {
   const [orders, setOrders] = useState(null);
   const error = useRef(null);
   const totalPrice = useRef(0);
-  //getting the orders from the database
   useEffect(() => {
+    //compare functions callbacks for sort()
+    function sortByAlphabetical(a, b) {
+      let x = a.item_name.toLowerCase();
+      let y = b.item_name.toLowerCase();
+      if (x < y) return -1;
+      if (x > y) return 1;
+      return 0;
+    }
+    function sortByLowestPrice(a, b) {
+      return a.total_price - b.total_price;
+    }
+    function sortByHighestPrice(a, b) {
+      return b.total_price - a.total_price;
+    }
+    function sortByNewest(a, b) {
+      let x = new Date(a.date_time);
+      let y = new Date(b.date_time);
+      if (x < y) return 1;
+      if (x > y) return -1;
+      return 0;
+    }
+    //getting the orders from the database
     const getOrders = async () => {
       try {
         const res = await axios.get(
@@ -22,6 +43,14 @@ const Orders = (props) => {
             foundOrders.push(res.data[i]);
           }
         }
+        //sorting the orders based on the request
+        if (!props.sortBy || props.sortBy === "alphabetical")
+          foundOrders.sort(sortByAlphabetical);
+        else if (props.sortBy === "lowest-price")
+          foundOrders.sort(sortByLowestPrice);
+        else if (props.sortBy === "highest-price")
+          foundOrders.sort(sortByHighestPrice);
+        else if (props.sortBy === "newest") foundOrders.sort(sortByNewest);
         setOrders(foundOrders);
       } catch (err) {
         error.current.textContent = "Error: " + err.response.data;
@@ -29,7 +58,7 @@ const Orders = (props) => {
       }
     };
     getOrders();
-  }, [props.requestQuery]);
+  }, [props.requestQuery, props.sortBy]);
   //the component
   return (
     <div>

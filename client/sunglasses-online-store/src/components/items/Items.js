@@ -10,14 +10,40 @@ const Items = (props) => {
   const modal = useRef(null);
   const modalImage = useRef(null);
   let modalInstance = null;
-  //getting the items from the database
   useEffect(() => {
+    //compare functions callbacks for sort()
+    function sortByAlphabetical(a, b) {
+      let x = a.name.toLowerCase();
+      let y = b.name.toLowerCase();
+      if (x < y) return -1;
+      if (x > y) return 1;
+      return 0;
+    }
+    function sortByLowestPrice(a, b) {
+      return a.price - b.price;
+    }
+    function sortByHighestPrice(a, b) {
+      return b.price - a.price;
+    }
+    function sortByMostOrdered(a, b) {
+      return b.times_ordered - a.times_ordered;
+    }
+    //getting the items from the database
     const getItems = async () => {
       try {
         const res = await axios.get(
           process.env.REACT_APP_BASE_URL + "item/get_items",
           { params: props.requestQuery }
         );
+        //sorting the items based on the request
+        if (!props.sortBy || props.sortBy === "alphabetical")
+          res.data.sort(sortByAlphabetical);
+        else if (props.sortBy === "lowest-price")
+          res.data.sort(sortByLowestPrice);
+        else if (props.sortBy === "highest-price")
+          res.data.sort(sortByHighestPrice);
+        else if (props.sortBy === "most-ordered")
+          res.data.sort(sortByMostOrdered);
         setItems(res.data);
       } catch (err) {
         error.current.textContent = "Error: " + err.response.data;
@@ -25,7 +51,7 @@ const Items = (props) => {
       }
     };
     getItems();
-  }, [props.requestQuery]);
+  }, [props.requestQuery, props.sortBy]);
   //this function is triggered by the Item component in the Items component to view the clicked image
   const viewImage = (e) => {
     modalInstance = new Modal(modal.current, {});

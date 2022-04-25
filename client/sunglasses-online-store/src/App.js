@@ -1,5 +1,5 @@
 import "./App.css";
-import AddItem from "./components/add-item/AddItem";
+import UserItems from "./components/user-items/UserItems";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -33,7 +33,7 @@ function App() {
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<AddItem test={false} />} />
+          <Route path="/" element={<UserItems sortBy={"bla"} />} />
         </Routes>
       </BrowserRouter>
     </div>
