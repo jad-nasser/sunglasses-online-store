@@ -37,6 +37,8 @@ async function get_orders(req, res) {
     search_info.item_color = new RegExp(req.query.item_color, "i");
   if (req.query.item_size)
     search_info.item_size = new RegExp(req.query.item_size, "i");
+  if (req.query.destination_country)
+    search_info.destination_country = req.query.destination_country;
 
   //getting the orders from the database
   try {

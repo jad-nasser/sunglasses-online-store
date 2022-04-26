@@ -51,50 +51,103 @@ async function find_orders(search_info) {
 
 //find orders in the database and represent them for the seller
 async function find_orders_for_seller(search_info) {
-  const orders = await Order.aggregate([
-    {
-      $match: search_info,
-    },
-    {
-      $addFields: {
-        user_id: { $toObjectId: "$user_id" },
+  let orders = [];
+  if (!search_info.destination_country) {
+    orders = await Order.aggregate([
+      {
+        $match: search_info,
       },
-    },
-    {
-      $lookup: {
-        from: "users",
-        localField: "user_id",
-        foreignField: "_id",
-        as: "user_info",
+      {
+        $addFields: {
+          user_id: { $toObjectId: "$user_id" },
+        },
       },
-    },
-    {
-      $project: {
-        "user_info.first_name": 1,
-        "user_info.last_name": 1,
-        "user_info.email": 1,
-        "user_info.phone": 1,
-        "user_info.country": 1,
-        "user_info.city": 1,
-        "user_info.street": 1,
-        "user_info.state_province_county": 1,
-        "user_info.bldg_apt_address": 1,
-        "user_info.zip_code": 1,
-        item_name: 1,
-        item_id: 1,
-        status: 1,
-        quantity: 1,
-        date_time: 1,
-        item_brand: 1,
-        item_size: 1,
-        item_color: 1,
-        item_price: 1,
-        shipment_id: 1,
-        _id: 1,
-        total_price: { $multiply: ["$item_price", "$quantity"] },
+      {
+        $lookup: {
+          from: "users",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "user_info",
+        },
       },
-    },
-  ]);
+      {
+        $project: {
+          "user_info.first_name": 1,
+          "user_info.last_name": 1,
+          "user_info.email": 1,
+          "user_info.phone": 1,
+          "user_info.country": 1,
+          "user_info.city": 1,
+          "user_info.street": 1,
+          "user_info.state_province_county": 1,
+          "user_info.bldg_apt_address": 1,
+          "user_info.zip_code": 1,
+          item_name: 1,
+          item_id: 1,
+          status: 1,
+          quantity: 1,
+          date_time: 1,
+          item_brand: 1,
+          item_size: 1,
+          item_color: 1,
+          item_price: 1,
+          shipment_id: 1,
+          _id: 1,
+          total_price: { $multiply: ["$item_price", "$quantity"] },
+        },
+      },
+    ]);
+  } else {
+    let search = Object.assign({}, search_info);
+    delete search.destination_country;
+    orders = await Order.aggregate([
+      {
+        $match: search,
+      },
+      {
+        $addFields: {
+          user_id: { $toObjectId: "$user_id" },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "user_info",
+        },
+      },
+      {
+        $project: {
+          "user_info.first_name": 1,
+          "user_info.last_name": 1,
+          "user_info.email": 1,
+          "user_info.phone": 1,
+          "user_info.country": 1,
+          "user_info.city": 1,
+          "user_info.street": 1,
+          "user_info.state_province_county": 1,
+          "user_info.bldg_apt_address": 1,
+          "user_info.zip_code": 1,
+          item_name: 1,
+          item_id: 1,
+          status: 1,
+          quantity: 1,
+          date_time: 1,
+          item_brand: 1,
+          item_size: 1,
+          item_color: 1,
+          item_price: 1,
+          shipment_id: 1,
+          _id: 1,
+          total_price: { $multiply: ["$item_price", "$quantity"] },
+        },
+      },
+      {
+        $match: { "user_info.country": search_info.destination_country },
+      },
+    ]);
+  }
   return orders;
 }
 //--------------------------------------------------------------------------------------------

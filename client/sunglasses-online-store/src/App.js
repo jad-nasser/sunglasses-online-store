@@ -1,5 +1,5 @@
 import "./App.css";
-import ItemsAdvancedSearch from "./components/items-advanced-search/ItemsAdvancedSearch";
+import OrdersAdvancedSearch from "./components/orders-advanced-search/OrdersAdvancedSearch";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -33,7 +33,7 @@ function App() {
     <div className="app" data-testid="App-div">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<ItemsAdvancedSearch />} />
+          <Route path="/" element={<OrdersAdvancedSearch />} />
         </Routes>
       </BrowserRouter>
     </div>
