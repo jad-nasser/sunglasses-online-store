@@ -44,6 +44,8 @@
   },
   "devDependencies": {
     "@testing-library/user-event": "^13.5.0",
+    "cypress": "^9.6.0",
+    "cypress-file-upload": "^5.0.8",
     "msw": "^0.36.3"
   }
 }
