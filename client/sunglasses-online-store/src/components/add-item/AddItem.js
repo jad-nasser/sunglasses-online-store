@@ -58,7 +58,8 @@ const AddItem = (props) => {
           }
           await axios.post(
             process.env.REACT_APP_BASE_URL + "item/create_item",
-            formData
+            formData,
+            { withCredentials: true }
           );
           success.current.textContent = "Item successfully added";
           success.current.classList.remove("d-none");

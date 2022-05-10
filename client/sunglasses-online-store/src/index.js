@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./scss/custom.css";
 import "../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js";
+import "../node_modules/bootstrap/dist/js/bootstrap.min";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { loadStripe } from "@stripe/stripe-js";

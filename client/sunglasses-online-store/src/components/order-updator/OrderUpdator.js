@@ -18,7 +18,8 @@ const OrderUpdator = (props) => {
     try {
       await axios.patch(
         process.env.REACT_APP_BASE_URL + "order/update_orders",
-        { search: props.requestQuery, update: updateInfo }
+        { search: props.requestQuery, update: updateInfo },
+        { withCredentials: true }
       );
       success.current.childNodes[0].textContent = "Orders successfully updated";
       success.current.classList.remove("d-none");

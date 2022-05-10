@@ -14,7 +14,7 @@ async function get_customer_orders(req, res) {
     );
     return res.json(user_orders);
   } catch (err) {
-    return res.json(err);
+    return res.status(500).json(err);
   }
 }
 //------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ async function get_orders(req, res) {
     );
     return res.json(found_orders);
   } catch (err) {
-    return res.json(err);
+    return res.status(500).json(err);
   }
 }
 //---------------------------------------------------------------------------------------------
@@ -91,7 +91,7 @@ async function update_orders(req, res) {
     });
     return res.send("Orders successfully updated");
   } catch (err) {
-    return res.json(err);
+    return res.status(500).json(err);
   }
 }
 //-------------------------------------------------------------------------------------
@@ -137,7 +137,7 @@ async function create_orders(req, res) {
         .status(403)
         .send("You need to verify your email to proceed this order");
   } catch (err) {
-    return res.json(err);
+    return res.status(500).json(err);
   }
 
   // checking the format of the items in the request, and checking if these items are really available
@@ -161,7 +161,7 @@ async function create_orders(req, res) {
         _id: req.body.items[i].id,
       });
     } catch (err) {
-      return res.json(err);
+      return res.status(500).json(err);
     }
     //checking if an item is found
     if (!item)
@@ -196,7 +196,7 @@ async function create_orders(req, res) {
       metadata: { integration_check: "accept_a_payment" },
     });
   } catch (err) {
-    return res.json(err);
+    return res.status(500).json(err);
   }
 
   //add the payment intent id to each order in the orders list
@@ -208,7 +208,7 @@ async function create_orders(req, res) {
   try {
     await order_database_controller.create_orders(orders);
   } catch (err) {
-    return res.json(err);
+    return res.status(500).json(err);
   }
 
   //sending the client_secret to the user

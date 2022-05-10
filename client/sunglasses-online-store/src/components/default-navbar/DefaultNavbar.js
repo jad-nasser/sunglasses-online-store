@@ -1,17 +1,18 @@
 //importing modules
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, createSearchParams } from "react-router-dom";
 import axios from "axios";
 //this navbar is for the users that are not logged in to the system
-const DefaultNavbar = (props) => {
+const DefaultNavbar = () => {
   const [brands, setBrands] = useState([]);
-  const [selectedBrand, setSelectedBrand] = useState("all");
+  const [selectedBrand, setSelectedBrand] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const navigate = useNavigate();
   //getting all the brands from the database
   useEffect(() => {
     const client = axios.create({
       baseURL: process.env.REACT_APP_BASE_URL,
+      withCredentials: true,
     });
     const getBrandsFromDB = async () => {
       let res = await client.get("item/get_all_brands");
@@ -39,14 +40,24 @@ const DefaultNavbar = (props) => {
   };
   //handling sort change
   const handleSortChange = (e) => {
-    props.changeSort(e.target.value);
+    let params = {};
+    if (selectedBrand !== "") params.brand = selectedBrand;
+    if (searchInput !== "") params.name = searchInput;
+    params.sort_by = e.target.value;
+    navigate({
+      pathname: "/home",
+      search: createSearchParams(params).toString(),
+    });
   };
   //handling search button click
   const handleSearchClick = () => {
-    let url = "/home";
-    if (selectedBrand !== "") url = url + "?brand=" + selectedBrand;
-    if (searchInput !== "") url = url + "?name=" + searchInput;
-    navigate(url);
+    let params = {};
+    if (selectedBrand !== "") params.brand = selectedBrand;
+    if (searchInput !== "") params.name = searchInput;
+    navigate({
+      pathname: "/home",
+      search: createSearchParams(params).toString(),
+    });
   };
   return (
     <nav className="navbar navbar-dark bg-dark">
@@ -150,7 +161,7 @@ const DefaultNavbar = (props) => {
           <Link
             type="button"
             className="btn white-text-btn btn-sm me-2 ms-2 ms-md-plus-5"
-            to="/cart"
+            to="/view_cart"
           >
             <i className="fas fa-shopping-cart"></i>
           </Link>

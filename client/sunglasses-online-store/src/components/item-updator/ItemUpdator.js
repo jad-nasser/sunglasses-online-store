@@ -37,12 +37,14 @@ const ItemUpdator = (props) => {
         }
         await axios.patch(
           process.env.REACT_APP_BASE_URL + "item/update_items",
-          formData
+          formData,
+          { withCredentials: true }
         );
       } else
         await axios.patch(
           process.env.REACT_APP_BASE_URL + "item/update_items",
-          { search: props.requestQuery, update: updateInfo }
+          { search: props.requestQuery, update: updateInfo },
+          { withCredentials: true }
         );
       success.current.childNodes[0].textContent = "Items successfully updated";
       success.current.classList.remove("d-none");

@@ -16,7 +16,10 @@ const DeactivateAccount = () => {
       try {
         let res = await axios.get(
           process.env.REACT_APP_BASE_URL + "user/check_password",
-          { password: password.current.value }
+          {
+            params: { password: password.current.value },
+            withCredentials: true,
+          }
         );
         if (res.data.check_password) {
           modalInstance = new Modal(modal.current, {});
@@ -38,8 +41,12 @@ const DeactivateAccount = () => {
   //delete user function
   const deleteUser = async () => {
     try {
-      await axios.delete(process.env.REACT_APP_BASE_URL + "user/delete_user");
-      await axios.delete(process.env.REACT_APP_BASE_URL + "user/sign_out");
+      await axios.delete(process.env.REACT_APP_BASE_URL + "user/delete_user", {
+        withCredentials: true,
+      });
+      await axios.delete(process.env.REACT_APP_BASE_URL + "user/sign_out", {
+        withCredentials: true,
+      });
       success.current.textContent = "Account successfully deactivated";
       success.current.classList.remove("d-none");
       await new Promise((r) => setTimeout(r, 3000));

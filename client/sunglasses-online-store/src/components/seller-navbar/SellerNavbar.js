@@ -1,12 +1,19 @@
 //importing modules
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 //this navbar is for the seller
 const SellerNavbar = () => {
   const [searchInput, setSearchInput] = useState("");
-  const [itemsOrdersRadio, setItemsOrdersRadio] = useState("");
+  const [itemsOrdersRadio, setItemsOrdersRadio] = useState("items");
+  const ordersRadio = useRef(null);
   const navigate = useNavigate();
+  //checking if the page is on orders page but the items radio button selected then click
+  //the orders radio button
+  useEffect(() => {
+    if (window.location.href.includes("orders") && itemsOrdersRadio === "items")
+      ordersRadio.current.click();
+  }, [itemsOrdersRadio]);
   //handling search input change
   const handleSearchInputChange = (e) => {
     setSearchInput(e.target.value);
@@ -19,12 +26,7 @@ const SellerNavbar = () => {
   };
   //handle advanced search button click
   const handleAdvancedSearchClick = () => {
-    let url =
-      "/seller/" +
-      itemsOrdersRadio +
-      "/" +
-      itemsOrdersRadio +
-      "_advanced_search";
+    let url = "/seller/" + itemsOrdersRadio + "_advanced_search";
     navigate(url);
   };
   //handle items-orders radio buttons select
@@ -35,7 +37,8 @@ const SellerNavbar = () => {
   //handle sign out button click
   const handleSignOutClick = async () => {
     let res = await axios.delete(
-      process.env.REACT_APP_BASE_URL + "user/sign_out"
+      process.env.REACT_APP_BASE_URL + "user/sign_out",
+      { withCredentials: true }
     );
     if (res.status === 200) navigate("/home");
   };
@@ -91,6 +94,7 @@ const SellerNavbar = () => {
               name="items-orders"
               value="orders"
               onClick={handleItemsOrdersChange}
+              ref={ordersRadio}
             />
             <label className="form-check-label" htmlFor="orders-radio">
               <small>Orders</small>

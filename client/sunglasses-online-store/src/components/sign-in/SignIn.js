@@ -26,7 +26,8 @@ const SignIn = () => {
           {
             email: email,
             password: password,
-          }
+          },
+          { withCredentials: true }
         );
         if (res.status === 200) {
           window.location.reload();

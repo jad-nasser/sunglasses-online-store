@@ -40,14 +40,14 @@ async function create_item(req, res) {
       });
     }
   } catch (err) {
-    return res.json(err);
+    return res.status(500).json(err);
   }
 
   //adding the new item to the database
   try {
     await item_database_controller.create_item(item_info);
   } catch (err) {
-    return res.json(err);
+    return res.status(500).json(err);
   }
 
   return res.send("Item added successfully");
@@ -74,7 +74,7 @@ async function get_items(req, res) {
   try {
     found_items = await item_database_controller.find_items(item_search_info);
   } catch (err) {
-    return res.json(err);
+    return res.status(500).json(err);
   }
 
   return res.json(found_items);
@@ -167,7 +167,7 @@ async function update_items(req, res) {
       }
     }
   } catch (err) {
-    return res.json(err);
+    return res.status(500).json(err);
   }
 
   //updating the items with the information provided
@@ -176,7 +176,7 @@ async function update_items(req, res) {
       $set: item_update_info,
     });
   } catch (err) {
-    return res.json(err);
+    return res.status(500).json(err);
   }
 
   return res.send("items successfully updated.");

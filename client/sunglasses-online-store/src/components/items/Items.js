@@ -33,7 +33,7 @@ const Items = (props) => {
       try {
         const res = await axios.get(
           process.env.REACT_APP_BASE_URL + "item/get_items",
-          { params: props.requestQuery }
+          { params: props.requestQuery, withCredentials: true }
         );
         //sorting the items based on the request
         if (!props.sortBy || props.sortBy === "alphabetical")

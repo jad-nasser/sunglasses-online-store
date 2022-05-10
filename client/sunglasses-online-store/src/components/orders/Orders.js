@@ -33,7 +33,7 @@ const Orders = (props) => {
       try {
         const res = await axios.get(
           process.env.REACT_APP_BASE_URL + "order/get_orders",
-          { params: props.requestQuery }
+          { params: props.requestQuery, withCredentials: true }
         );
         //remove the orders that has status= 'Awaiting Payment' and calculating all orders total price
         let foundOrders = [];

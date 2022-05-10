@@ -10,18 +10,20 @@ import { setupServer } from "msw/node";
 //creating mock orders
 let orders = [];
 orders[0] = {
-  user_info: {
-    first_name: "Test",
-    last_name: "Test",
-    email: "testtest@test.com",
-    phone: "+54564654545",
-    country: "Sweden",
-    city: "Sweden",
-    street: "first street",
-    state_province_county: "Sweden",
-    bldg_apt_address: "First bldg, first floor",
-    zip_code: 1234,
-  },
+  user_info: [
+    {
+      first_name: "Test",
+      last_name: "Test",
+      email: "testtest@test.com",
+      phone: "+54564654545",
+      country: "Sweden",
+      city: "Sweden",
+      street: "first street",
+      state_province_county: "Sweden",
+      bldg_apt_address: "First bldg, first floor",
+      zip_code: 1234,
+    },
+  ],
   item_name: "item1",
   item_id: "123",
   status: "Awaiting Shipment",
@@ -36,18 +38,20 @@ orders[0] = {
   _id: "123",
 };
 orders[1] = {
-  user_info: {
-    first_name: "Test",
-    last_name: "Test",
-    email: "testtest@test.com",
-    phone: "+54564654545",
-    country: "Sweden",
-    city: "Sweden",
-    street: "first street",
-    state_province_county: "Sweden",
-    bldg_apt_address: "First bldg, first floor",
-    zip_code: 1234,
-  },
+  user_info: [
+    {
+      first_name: "Test",
+      last_name: "Test",
+      email: "testtest@test.com",
+      phone: "+54564654545",
+      country: "Sweden",
+      city: "Sweden",
+      street: "first street",
+      state_province_county: "Sweden",
+      bldg_apt_address: "First bldg, first floor",
+      zip_code: 1234,
+    },
+  ],
   item_name: "item1",
   item_id: "123",
   status: "Awaiting Shipment",
@@ -62,18 +66,20 @@ orders[1] = {
   _id: "1234",
 };
 orders[2] = {
-  user_info: {
-    first_name: "Test",
-    last_name: "Test",
-    email: "testtest@test.com",
-    phone: "+54564654545",
-    country: "Sweden",
-    city: "Sweden",
-    street: "first street",
-    state_province_county: "Sweden",
-    bldg_apt_address: "First bldg, first floor",
-    zip_code: 1234,
-  },
+  user_info: [
+    {
+      first_name: "Test",
+      last_name: "Test",
+      email: "testtest@test.com",
+      phone: "+54564654545",
+      country: "Sweden",
+      city: "Sweden",
+      street: "first street",
+      state_province_county: "Sweden",
+      bldg_apt_address: "First bldg, first floor",
+      zip_code: 1234,
+    },
+  ],
   item_name: "item2",
   item_id: "1234",
   status: "Awaiting Payment",

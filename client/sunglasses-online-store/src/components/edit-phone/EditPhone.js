@@ -12,9 +12,13 @@ const EditPhone = () => {
     e.target.classList.add("was-validated");
     if (e.target.checkValidity()) {
       try {
-        await axios.patch(process.env.REACT_APP_BASE_URL + "user/update_user", {
-          phone: code.current.value + phone.current.value,
-        });
+        await axios.patch(
+          process.env.REACT_APP_BASE_URL + "user/update_user",
+          {
+            phone: code.current.value + phone.current.value,
+          },
+          { withCredentials: true }
+        );
         success.current.textContent = "Phone number successfully changed";
         success.current.classList.remove("d-none");
       } catch (err) {

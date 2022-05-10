@@ -74,7 +74,8 @@ const SignUp = () => {
             state_province_county: state.current.value,
             zip_code: zip.current.value,
             bldg_apt_address: aptBldg.current.value,
-          }
+          },
+          { withCredentials: true }
         );
         if (res.status === 200) {
           successAlert.current.textContent = "Account successfully created";

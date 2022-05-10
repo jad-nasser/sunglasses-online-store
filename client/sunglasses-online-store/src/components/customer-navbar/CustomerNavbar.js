@@ -1,18 +1,19 @@
 //importing modules
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, createSearchParams } from "react-router-dom";
 import axios from "axios";
 //this navbar is for the users that are logged in to the system
-const CustomerNavbar = (props) => {
+const CustomerNavbar = () => {
   const [brands, setBrands] = useState([]);
-  const [selectedBrand, setSelectedBrand] = useState("all");
+  const [selectedBrand, setSelectedBrand] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const navigate = useNavigate();
   //getting all the brands from the database
   useEffect(() => {
     const getBrandsFromDB = async () => {
       let res = await axios.get(
-        process.env.REACT_APP_BASE_URL + "item/get_all_brands"
+        process.env.REACT_APP_BASE_URL + "item/get_all_brands",
+        { withCredentials: true }
       );
       if (!res || !res.data || !res.data.brands) return;
       setBrands(res.data.brands);
@@ -38,19 +39,30 @@ const CustomerNavbar = (props) => {
   };
   //handling sort change
   const handleSortChange = (e) => {
-    props.changeSort(e.target.value);
+    let params = {};
+    if (selectedBrand !== "") params.brand = selectedBrand;
+    if (searchInput !== "") params.name = searchInput;
+    params.sort_by = e.target.value;
+    navigate({
+      pathname: "/user/home",
+      search: createSearchParams(params).toString(),
+    });
   };
   //handling search button click
   const handleSearchClick = () => {
-    let url = "/user/home";
-    if (selectedBrand !== "") url = url + "?brand=" + selectedBrand;
-    if (searchInput !== "") url = url + "?name=" + searchInput;
-    navigate(url);
+    let params = {};
+    if (selectedBrand !== "") params.brand = selectedBrand;
+    if (searchInput !== "") params.name = searchInput;
+    navigate({
+      pathname: "/user/home",
+      search: createSearchParams(params).toString(),
+    });
   };
   //handle sign out button click
   const handleSignOutClick = async () => {
     let res = await axios.delete(
-      process.env.REACT_APP_BASE_URL + "user/sign_out"
+      process.env.REACT_APP_BASE_URL + "user/sign_out",
+      { withCredentials: true }
     );
     if (res.status === 200) navigate("/home");
   };
@@ -156,7 +168,7 @@ const CustomerNavbar = (props) => {
           <Link
             type="button"
             className="btn white-text-btn btn-sm me-1 me-md-plus-2 ms-2 ms-md-plus-5 px-1 px-md-plus-2"
-            to="/user/cart"
+            to="/user/view_cart"
           >
             <i className="fas fa-shopping-cart"></i>
           </Link>

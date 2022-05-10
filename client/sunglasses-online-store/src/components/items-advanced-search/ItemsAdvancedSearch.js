@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, createSearchParams } from "react-router-dom";
 const ItemsAdvancedSearch = () => {
   const brand = useRef(null);
   const name = useRef(null);
@@ -16,18 +16,20 @@ const ItemsAdvancedSearch = () => {
   };
   //handle search click button
   const handleSearchClick = () => {
-    let url = "/seller/items";
-    if (brand.current.value) url = url + "?brand=" + brand.current.value;
-    if (name.current.value) url = url + "?name=" + name.current.value;
-    if (color.current.value) url = url + "?color=" + color.current.value;
-    if (size.current.value) url = url + "?size=" + size.current.value;
-    if (price.current.value) url = url + "?price=" + price.current.value;
-    if (quantity.current.value)
-      url = url + "?quantity=" + quantity.current.value;
+    let params = {};
+    if (brand.current.value) params.brand = brand.current.value;
+    if (name.current.value) params.name = name.current.value;
+    if (color.current.value) params.color = color.current.value;
+    if (size.current.value) params.size = size.current.value;
+    if (price.current.value) params.price = price.current.value;
+    if (quantity.current.value) params.quantity = quantity.current.value;
     if (timesOrdered.current.value)
-      url = url + "?times_ordered=" + timesOrdered.current.value;
-    url = url + "?sort_by=" + selectedSort.current;
-    navigate(url);
+      params.times_ordered = timesOrdered.current.value;
+    params.sort_by = selectedSort.current;
+    navigate({
+      pathname: "/seller/items",
+      search: createSearchParams(params).toString(),
+    });
   };
   //the component
   return (

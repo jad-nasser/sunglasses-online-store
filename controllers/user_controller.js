@@ -52,7 +52,7 @@ async function create_user(req, res) {
   try {
     await user_database_controller.create_user(user_info);
   } catch (err) {
-    res.json(err);
+    return res.status(500).json(err);
   }
 
   //user created successfully
@@ -74,7 +74,7 @@ async function user_login(req, res) {
   try {
     found_user = await user_database_controller.find_user(user);
   } catch (err) {
-    return res.json(err);
+    return res.status(500).json(err);
   }
 
   //check if the user is not found
@@ -195,7 +195,7 @@ async function delete_user(req, res) {
       _id: req.user.user_id,
     });
   } catch (err) {
-    return res.json(err);
+    return res.status(500).json(err);
   }
   return res.send(
     "The user with the ID:" + req.user.user_id + " is successfully deleted."
@@ -245,7 +245,7 @@ async function update_user(req, res) {
       { $set: user_update_info }
     );
   } catch (err) {
-    return res.json(err);
+    return res.status(500).json(err);
   }
 
   //user successfully updated
@@ -322,7 +322,7 @@ async function verify_email_for_testing_only(req, res) {
       { $set: { is_email_verified: true } }
     );
   } catch (err) {
-    return res.json(err);
+    return res.status(500).json(err);
   }
   return res.send("Your email address is succesfully verified");
 }
@@ -337,7 +337,7 @@ async function verify_phone_for_testing_only(req, res) {
       { $set: { is_phone_verified: true } }
     );
   } catch (err) {
-    return res.json(err);
+    return res.status(500).json(err);
   }
   return res.send("Your phone number is succesfully verified");
 }
@@ -368,7 +368,7 @@ async function email_validate(req, res, next) {
       email: req.body.email,
     });
   } catch (err) {
-    return res.json(err);
+    return res.status(500).json(err);
   }
   if (already_existing_email) {
     req.body.email_validate = false;

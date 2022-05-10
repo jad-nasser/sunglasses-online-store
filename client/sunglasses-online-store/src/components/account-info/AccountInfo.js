@@ -19,7 +19,8 @@ const AccountInfo = () => {
     const getUser = async () => {
       try {
         let res = await axios.get(
-          process.env.REACT_APP_BASE_URL + "user/get_user"
+          process.env.REACT_APP_BASE_URL + "user/get_user",
+          { withCredentials: true }
         );
         firstName.current.textContent = res.data.user_info.first_name;
         lastName.current.textContent = res.data.user_info.last_name;

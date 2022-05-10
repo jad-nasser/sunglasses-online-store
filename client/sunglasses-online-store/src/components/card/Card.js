@@ -19,7 +19,8 @@ const Card = () => {
       //creating the payment intent on the server
       let res = await axios.post(
         process.env.REACT_APP_BASE_URL + "order/create_orders",
-        { items: items }
+        { items: items },
+        { withCredentials: true }
       );
       let clientSecret = res.data.client_secret;
       //confirm the payment on the client
@@ -29,13 +30,19 @@ const Card = () => {
       );
       //displaying the result to the user
       info.current.classList.add("d-none");
-      if (stripeError) {
+      if (!paymentIntent) {
+        error.current.textContent =
+          "Error: Some inputs are missing or not completed well";
+        error.current.classList.remove("d-none");
+      } else if (stripeError) {
         error.current.textContent = "Error: " + stripeError.message;
         error.current.classList.remove("d-none");
       } else if (paymentIntent.status === "succeeded") {
         localStorage.removeItem("items");
         success.current.textContent = "Payment succeeded";
         success.current.classList.remove("d-none");
+        await new Promise((r) => setTimeout(r, 2000));
+        window.location.reload();
       } else {
         error.current.textContent = "Payment " + paymentIntent.status;
         error.current.classList.remove("d-none");

@@ -19,9 +19,7 @@ let order1 = {
   item_size: "1",
   item_color: "Gold",
   item_price: 200,
-  item_info: {
-    images: ["blabla.jpg"],
-  },
+  item_info: [{ images: ["blabla.jpg"] }],
 };
 let order2 = {
   item_name: "Ray-Ban Rounded",
@@ -33,9 +31,7 @@ let order2 = {
   item_size: "1",
   item_color: "Gold",
   item_price: 200,
-  item_info: {
-    images: ["blabla.jpg"],
-  },
+  item_info: [{ images: ["blabla.jpg"] }],
 };
 let order3 = {
   item_name: "Ray-Ban Aviator",
@@ -47,9 +43,7 @@ let order3 = {
   item_size: "1",
   item_color: "Gold",
   item_price: 200,
-  item_info: {
-    images: ["blabla.jpg"],
-  },
+  item_info: [{ images: ["blabla.jpg"] }],
 };
 orders[0] = order1;
 orders[1] = order2;

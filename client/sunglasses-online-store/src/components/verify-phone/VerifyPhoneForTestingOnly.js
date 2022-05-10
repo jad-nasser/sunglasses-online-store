@@ -6,7 +6,9 @@ const VerifyPhoneForTestingOnly = () => {
   const verifyPhone = async (e) => {
     try {
       await axios.post(
-        process.env.REACT_APP_BASE_URL + "user/verify_phone_for_testing_only"
+        process.env.REACT_APP_BASE_URL + "user/verify_phone_for_testing_only",
+        {},
+        { withCredentials: true }
       );
       success.current.textContent = "Phone successfully verified";
       success.current.classList.remove("d-none");

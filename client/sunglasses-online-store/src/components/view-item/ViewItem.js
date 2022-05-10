@@ -14,7 +14,7 @@ const ViewItem = (props) => {
       try {
         let res = await axios.get(
           process.env.REACT_APP_BASE_URL + "item/get_items",
-          { params: props.requestQuery }
+          { params: props.requestQuery, withCredentials: true }
         );
         let matrix = [];
         for (let i = 0; i < res.data.length; i++) {
@@ -74,20 +74,24 @@ const ViewItem = (props) => {
   //handle item size selection
   const handleSizeSelection = (e) => {
     if (selectedItem.x !== parseInt(e.target.value)) {
-      totalPrice.current.textContent =
-        itemGroupMatrix[selectedItem.y][parseInt(e.target.value)].price *
-          parseInt(quantity.current.value) +
-        "$";
+      if (quantity.current.value)
+        totalPrice.current.textContent =
+          itemGroupMatrix[selectedItem.y][parseInt(e.target.value)].price *
+            parseInt(quantity.current.value) +
+          "$";
+      else totalPrice.current.textContent = 0 + "$";
       setSelectedItem({ x: parseInt(e.target.value), y: selectedItem.y });
     }
   };
   //handle item color selection
   const handleColorSelection = (e) => {
     if (selectedItem.y !== parseInt(e.target.value)) {
-      totalPrice.current.textContent =
-        itemGroupMatrix[parseInt(e.target.value)][0].price *
-          parseInt(quantity.current.value) +
-        "$";
+      if (quantity.current.value)
+        totalPrice.current.textContent =
+          itemGroupMatrix[parseInt(e.target.value)][0].price *
+            parseInt(quantity.current.value) +
+          "$";
+      else totalPrice.current.value = 0 + "$";
       setSelectedItem({ x: 0, y: parseInt(e.target.value) });
     }
   };

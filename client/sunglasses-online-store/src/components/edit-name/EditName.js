@@ -11,10 +11,14 @@ const EditName = () => {
     e.target.classList.add("was-validated");
     if (e.target.checkValidity()) {
       try {
-        await axios.patch(process.env.REACT_APP_BASE_URL + "user/update_user", {
-          first_name: firstName.current.value,
-          last_name: lastName.current.value,
-        });
+        await axios.patch(
+          process.env.REACT_APP_BASE_URL + "user/update_user",
+          {
+            first_name: firstName.current.value,
+            last_name: lastName.current.value,
+          },
+          { withCredentials: true }
+        );
         success.current.textContent = "Name successfully changed";
         success.current.classList.remove("d-none");
       } catch (err) {

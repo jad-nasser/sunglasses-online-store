@@ -19,20 +19,21 @@ const Order = (props) => {
             " " +
             orderDateTime.toLocaleTimeString()}
         </div>
-        <div>First Name: {props.order.user_info.first_name}</div>
-        <div>Last Name: {props.order.user_info.last_name}</div>
-        <div>Email: {props.order.user_info.email}</div>
-        <div>Phone: {props.order.user_info.phone}</div>
-        <div>Country: {props.order.user_info.country}</div>
+        <div>First Name: {props.order.user_info[0].first_name}</div>
+        <div>Last Name: {props.order.user_info[0].last_name}</div>
+        <div>Email: {props.order.user_info[0].email}</div>
+        <div>Phone: {props.order.user_info[0].phone}</div>
+        <div>Country: {props.order.user_info[0].country}</div>
         <div>
-          State/Province/County: {props.order.user_info.state_province_county}
+          State/Province/County:{" "}
+          {props.order.user_info[0].state_province_county}
         </div>
-        <div>City: {props.order.user_info.city}</div>
-        <div>Street: {props.order.user_info.street}</div>
+        <div>City: {props.order.user_info[0].city}</div>
+        <div>Street: {props.order.user_info[0].street}</div>
       </div>
       <div className="col">
-        <div>Bldg/Apt Address: {props.order.user_info.bldg_apt_address}</div>
-        <div>ZIP Code: {props.order.user_info.zip_code}</div>
+        <div>Bldg/Apt Address: {props.order.user_info[0].bldg_apt_address}</div>
+        <div>ZIP Code: {props.order.user_info[0].zip_code}</div>
         <div>Item Brand: {props.order.item_brand}</div>
         <div>Item Name: {props.order.item_name}</div>
         <div>Item Color: {props.order.item_color}</div>

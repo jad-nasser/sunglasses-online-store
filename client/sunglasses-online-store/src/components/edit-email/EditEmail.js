@@ -12,9 +12,13 @@ const EditEmail = () => {
     emailError.current.classList.remove("d-none");
     if (e.target.checkValidity()) {
       try {
-        await axios.patch(process.env.REACT_APP_BASE_URL + "user/update_user", {
-          email: email.current.value,
-        });
+        await axios.patch(
+          process.env.REACT_APP_BASE_URL + "user/update_user",
+          {
+            email: email.current.value,
+          },
+          { withCredentials: true }
+        );
         success.current.textContent = "Email address successfully changed";
         success.current.classList.remove("d-none");
       } catch (err) {

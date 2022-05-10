@@ -5,10 +5,10 @@ const Footer = () => {
       <div>Phone: +123456789</div>
       <div>Email: sunglassesonlinestore@email.com</div>
       <div className="row justify-content-center mt-2">
-        <i class="fa fa-lg fa-brands fa-facebook col-auto"></i>
-        <i class="fa fa-lg fa-brands fa-twitter col-auto"></i>
-        <i class="fa fa-lg fa-brands fa-instagram col-auto"></i>
-        <i class="fa fa-lg fa-brands fa-youtube col-auto"></i>
+        <i className="fa fa-lg fa-brands fa-facebook col-auto"></i>
+        <i className="fa fa-lg fa-brands fa-twitter col-auto"></i>
+        <i className="fa fa-lg fa-brands fa-instagram col-auto"></i>
+        <i className="fa fa-lg fa-brands fa-youtube col-auto"></i>
       </div>
     </footer>
   );

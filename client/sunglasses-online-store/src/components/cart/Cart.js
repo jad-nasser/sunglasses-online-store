@@ -13,7 +13,8 @@ const Cart = (props) => {
   const navigate = useNavigate();
   useEffect(() => {
     const getItems = async () => {
-      const lsItems = JSON.parse(localStorage.getItem("items"));
+      let lsItems = JSON.parse(localStorage.getItem("items"));
+      if (!lsItems) lsItems = [];
       try {
         let foundItems = [];
 
@@ -25,7 +26,7 @@ const Cart = (props) => {
         for (let i = 0; i < lsItems.length; i++) {
           let res = await axios.get(
             process.env.REACT_APP_BASE_URL + "item/get_items",
-            { params: { id: lsItems[i].id } }
+            { params: { id: lsItems[i].id }, withCredentials: true }
           );
           if (
             res.data.length > 0 &&

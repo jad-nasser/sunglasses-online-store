@@ -46,7 +46,7 @@ function UserItems(props) {
       try {
         let res = await axios.get(
           process.env.REACT_APP_BASE_URL + "item/get_items",
-          { params: props.requestQuery }
+          { params: props.requestQuery, withCredentials: true }
         );
         //grouping the found items by its name so if for example two items with the same name will be
         //added in one group

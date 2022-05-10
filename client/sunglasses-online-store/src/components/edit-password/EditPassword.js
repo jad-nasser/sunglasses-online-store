@@ -16,14 +16,18 @@ const EditPassword = () => {
       try {
         let res = await axios.get(
           process.env.REACT_APP_BASE_URL + "user/check_password",
-          { password: oldPassword.current.value }
+          {
+            params: { password: oldPassword.current.value },
+            withCredentials: true,
+          }
         );
         if (res.data.check_password) {
           await axios.patch(
             process.env.REACT_APP_BASE_URL + "user/update_user",
             {
               password: password.current.value,
-            }
+            },
+            { withCredentials: true }
           );
           success.current.textContent = "Password successfully changed";
           success.current.classList.remove("d-none");

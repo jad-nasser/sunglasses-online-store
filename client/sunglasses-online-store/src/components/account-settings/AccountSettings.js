@@ -1,6 +1,12 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 const AccountSettings = () => {
+  //an element just to scroll to it when any link is clicked in small screen size
+  const scrollTo = useRef(null);
+  //all the aim of this method is just to scroll for better user experience on small screen size
+  const handleLinkClick = () => {
+    scrollTo.current.scrollIntoView();
+  };
   return (
     <div>
       <div className="border-bottom d-md-none">
@@ -11,7 +17,7 @@ const AccountSettings = () => {
             data-bs-toggle="collapse"
             data-bs-target="#options"
           >
-            <i class="fa fa-solid fa-bars"></i>
+            <i className="fa fa-solid fa-bars"></i>
           </button>
         </div>
         <div className="collapse text-center" id="options">
@@ -20,6 +26,7 @@ const AccountSettings = () => {
               <Link
                 to="/user/account_settings/account_info"
                 className="text-decoration-none"
+                onClick={handleLinkClick}
               >
                 Account Info
               </Link>
@@ -28,6 +35,7 @@ const AccountSettings = () => {
               <Link
                 to="/user/account_settings/edit_name"
                 className="text-decoration-none"
+                onClick={handleLinkClick}
               >
                 Change Your Name
               </Link>
@@ -36,6 +44,7 @@ const AccountSettings = () => {
               <Link
                 to="/user/account_settings/edit_email"
                 className="text-decoration-none"
+                onClick={handleLinkClick}
               >
                 Change Your Email
               </Link>
@@ -44,6 +53,7 @@ const AccountSettings = () => {
               <Link
                 to="/user/account_settings/verify_email"
                 className="text-decoration-none"
+                onClick={handleLinkClick}
               >
                 Verify Your Email
               </Link>
@@ -52,6 +62,7 @@ const AccountSettings = () => {
               <Link
                 to="/user/account_settings/edit_phone"
                 className="text-decoration-none"
+                onClick={handleLinkClick}
               >
                 Change Your Phone
               </Link>
@@ -60,6 +71,7 @@ const AccountSettings = () => {
               <Link
                 to="/user/account_settings/verify_phone"
                 className="text-decoration-none"
+                onClick={handleLinkClick}
               >
                 Verify Your Phone
               </Link>
@@ -68,6 +80,7 @@ const AccountSettings = () => {
               <Link
                 to="/user/account_settings/edit_password"
                 className="text-decoration-none"
+                onClick={handleLinkClick}
               >
                 Change Your Password
               </Link>
@@ -76,6 +89,7 @@ const AccountSettings = () => {
               <Link
                 to="/user/account_settings/edit_order_destination"
                 className="text-decoration-none"
+                onClick={handleLinkClick}
               >
                 Change Order Destination
               </Link>
@@ -84,6 +98,8 @@ const AccountSettings = () => {
               <Link
                 to="/user/account_settings/deactivate_account"
                 className="text-decoration-none"
+                onClick={handleLinkClick}
+                ref={scrollTo}
               >
                 Deactivate Your Account
               </Link>
@@ -91,107 +107,62 @@ const AccountSettings = () => {
           </ul>
         </div>
       </div>
-      <ul className="list-group m-3 d-none d-md-block">
-        <li
-          className="list-group-item list-group-item-action active"
-          data-bs-toggle="list"
-        >
-          <Link
-            to="/user/account_settings/account_info"
-            className="text-reset text-decoration-none"
-          >
-            Account Info
-          </Link>
-        </li>
-        <li
+      <div className="list-group m-3 d-none d-md-block">
+        <Link
+          to="/user/account_settings/account_info"
           className="list-group-item list-group-item-action"
-          data-bs-toggle="list"
         >
-          <Link
-            to="/user/account_settings/edit_name"
-            className="text-reset text-decoration-none"
-          >
-            Change Your Name
-          </Link>
-        </li>
-        <li
+          Account Info
+        </Link>
+        <Link
+          to="/user/account_settings/edit_name"
           className="list-group-item list-group-item-action"
-          data-bs-toggle="list"
         >
-          <Link
-            to="/user/account_settings/edit_email"
-            className="text-reset text-decoration-none"
-          >
-            Change Your Email
-          </Link>
-        </li>
-        <li
+          Change Your Name
+        </Link>
+        <Link
+          to="/user/account_settings/edit_email"
           className="list-group-item list-group-item-action"
-          data-bs-toggle="list"
         >
-          <Link
-            to="/user/account_settings/verify_email"
-            className="text-reset text-decoration-none"
-          >
-            Verify Your Email
-          </Link>
-        </li>
-        <li
+          Change Your Email
+        </Link>
+        <Link
+          to="/user/account_settings/verify_email"
           className="list-group-item list-group-item-action"
-          data-bs-toggle="list"
         >
-          <Link
-            to="/user/account_settings/edit_phone"
-            className="text-reset text-decoration-none"
-          >
-            Change Your Phone
-          </Link>
-        </li>
-        <li
+          Verify Your Email
+        </Link>
+        <Link
+          to="/user/account_settings/edit_phone"
           className="list-group-item list-group-item-action"
-          data-bs-toggle="list"
         >
-          <Link
-            to="/user/account_settings/verify_phone"
-            className="text-reset text-decoration-none"
-          >
-            Verify Your Phone
-          </Link>
-        </li>
-        <li
+          Change Your Phone
+        </Link>
+        <Link
+          to="/user/account_settings/verify_phone"
           className="list-group-item list-group-item-action"
-          data-bs-toggle="list"
         >
-          <Link
-            to="/user/account_settings/edit_password"
-            className="text-reset text-decoration-none"
-          >
-            Change Your Password
-          </Link>
-        </li>
-        <li
+          Verify Your Phone
+        </Link>
+        <Link
+          to="/user/account_settings/edit_password"
           className="list-group-item list-group-item-action"
-          data-bs-toggle="list"
         >
-          <Link
-            to="/user/account_settings/edit_order_destination"
-            className="text-reset text-decoration-none"
-          >
-            Change Order Destination
-          </Link>
-        </li>
-        <li
+          Change Your Password
+        </Link>
+        <Link
+          to="/user/account_settings/edit_order_destination"
           className="list-group-item list-group-item-action"
-          data-bs-toggle="list"
         >
-          <Link
-            to="/user/account_settings/deactivate_account"
-            className="text-reset text-decoration-none"
-          >
-            Deactivate Your Account
-          </Link>
-        </li>
-      </ul>
+          Change Order Destination
+        </Link>
+        <Link
+          to="/user/account_settings/deactivate_account"
+          className="list-group-item list-group-item-action"
+        >
+          Deactivate Your Account
+        </Link>
+      </div>
     </div>
   );
 };

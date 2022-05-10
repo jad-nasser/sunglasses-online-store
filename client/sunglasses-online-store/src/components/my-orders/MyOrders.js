@@ -9,7 +9,8 @@ const MyOrders = () => {
       try {
         let finalOrders = [];
         let res = await axios.get(
-          process.env.REACT_APP_BASE_URL + "order/get_customer_orders"
+          process.env.REACT_APP_BASE_URL + "order/get_customer_orders",
+          { withCredentials: true }
         );
         for (let i = 0; i < res.data.length; i++) {
           if (res.data[i].status !== "Awaiting Payment") {
