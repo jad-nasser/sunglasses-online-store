@@ -59,7 +59,7 @@ This project provides online sunglasses shopping. The seller can add and edit su
 
 <br>
 
-This project uses MVC architecture (**M**odel-**V**iew-**C**ontroller) with all MVC parts having validations for more security and it is built using **MERN** stack web development (**M**ongoDB-**E**xpressJS-**R**eactJS-**N**odeJS). The server side uses **REST API** strategy built with NodeJs, and ExpressJs framework, and MongDB database. The client is built using ReactJS framework.
+This project uses MVC architecture (**M**odel-**V**iew-**C**ontroller) with all MVC parts having validations for more security and it is built using **MERN** stack web development (**M**ongoDB-**E**xpressJS-**R**eactJS-**N**odeJS). The server side uses **REST API** strategy built with NodeJs, and ExpressJs framework, and MongDB database. The client is built with ReactJS framework.
 
 The project consists of three main parts:
 
