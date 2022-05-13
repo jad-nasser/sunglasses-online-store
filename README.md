@@ -302,7 +302,8 @@ In order the users can sign up they need to:
 1. Go to sign in page
 2. Click the "Sign Up" button in the bottom of the page, this will navigate the user to the sign up page
 3. Then the user **should** fill all the inputs and sign up
-4. After the sign up is completed the user needs to sign in in order to access his/her account
+4. If sign up not succeeded then maybe there are some inputs missing or the email is not valid or the password not valid or confirm password is the same as the password, and a red text will appear under the inputs telling the user what to do.
+5. After the sign up is completed the user needs to sign in in order to access his/her account
 
 ##### **For Signed In & Non Signed In Users**
 
