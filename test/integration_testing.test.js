@@ -559,10 +559,11 @@ describe("Testing item router", function () {
       noe3 = count;
     });
     //sending a request to update the second created item
+    let search = { name: "2" };
     await request(app)
       .patch("/item/update_items")
       .set("Cookie", ["token=" + token])
-      .field("search[name]", "2")
+      .field("search", JSON.stringify(search))
       .attach("ItemImage", "./test/test_images/pexels-expect-best-1035733.jpg")
       .expect(function (res) {
         final_response = res;

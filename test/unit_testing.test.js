@@ -1253,7 +1253,7 @@ describe("Testing item controller", function () {
       let res = Object.assign({}, response);
       let req = {
         body: {
-          search: { name: "Rounded" },
+          search: '{ "name": "Rounded" }',
         },
         files: files,
       };
@@ -1318,7 +1318,7 @@ describe("Testing item controller", function () {
       let res = Object.assign({}, response);
       let req = {
         body: {
-          search: { name: "Rounded" },
+          search: '{ "name": "Rounded" }',
         },
         files: files,
       };

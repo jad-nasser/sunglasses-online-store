@@ -68,6 +68,8 @@ describe("The user adding items to the shopping cart", () => {
     //search for the items
     cy.get('[placeholder="Search"]').type("sunglasses test item");
     cy.get(".fa-search").click();
+    //wait for the items to load
+    cy.wait(5000);
     //clicking the needed item
     cy.contains("sunglasses test item 1").click();
     //waiting for the view item page to load
@@ -144,6 +146,8 @@ describe("The user making orders", () => {
     //search for the items
     cy.get('[placeholder="Search"]').type("sunglasses test item");
     cy.get(".fa-search").click();
+    //waiting for the items to load
+    cy.wait(5000);
     //clicking the needed item
     cy.contains("sunglasses test item 1").click();
     //waiting for the view item page to load

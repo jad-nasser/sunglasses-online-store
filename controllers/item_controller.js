@@ -83,7 +83,16 @@ async function get_items(req, res) {
 
 //update items
 //onlt the seller can update items
-async function update_items(req, res) {
+async function update_items(req1, res) {
+  let req = {};
+  req.body = req1.body;
+  //if the request contains images
+  if (req1.files && Array.isArray(req1.files)) {
+    req.files = req1.files;
+    req.body = JSON.parse(JSON.stringify(req1.body));
+    if (req.body.search) req.body.search = JSON.parse(req.body.search);
+    if (req.body.update) req.body.update = JSON.parse(req.body.update);
+  }
   //gathering the search info to know which items should be updated
   var item_search_info = {};
   if (req.body.search) {

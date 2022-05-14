@@ -30,8 +30,8 @@ const ItemUpdator = (props) => {
     try {
       if (files.length > 0) {
         const formData = new FormData();
-        formData.append("search", props.requestQuery);
-        formData.append("update", updateInfo);
+        formData.append("search", JSON.stringify(props.requestQuery));
+        formData.append("update", JSON.stringify(updateInfo));
         for (let i = 0; i < files.length; i++) {
           formData.append("ItemImage", files[i], files[i].name);
         }
